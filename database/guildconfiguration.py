@@ -3,25 +3,15 @@ from discord import Embed
 
 from enum import Enum
 
-class Posting(Enum):
-    cases = "posting_cases"
-    cases_creation = "posting_cases_creation"
-    warn = "posting_warn"
-    mod_actions = "posting_mod_actions"
 
 
+# channels listen to "events"
 
-class ChannelPostingConfig:
-    def __init__(self, channel_id:int, postings:list[str]=[]):
-        self.channel_id = channel_id
-        self.postings:list[Posting.value] = postings
-        self.data = {
-            str(self.channel_id): self.postings
-        }
-    
-    def add_posting(self, posting:Posting):
-        self.postings.append(posting.value)
-        self.__init__(self.channel_id, self.postings)
+# registered_channels = {
+#     channel_id: {
+#         "listen":["cases"]
+#     }
+# }
 
 
     
@@ -30,12 +20,16 @@ class GuildConfig(BaseDatabaseObject):
     def __init__(self, data:dict):
         self._id = data.get('_id')
         self.guild_id = data.get('guild_id')
-        self.channel_configurations = data.get('channel_configurations', [])
+        self.registered_channels = data.get('registered_channels', {})
 
     async def update(self, data):
         result = await self._update(CONFIGURATION, {"_id":self._id}, data)
         self.__init__(result)
         return result
+    
+    async def add_channel(self, channel_id):
+        await self.update({"$set":{f"registered_channels.{channel_id}":{"listen":[]}}})
+
 
 
 

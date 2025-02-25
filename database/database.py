@@ -18,8 +18,9 @@ class BaseDatabaseObject:
     
 
     async def _update(self,_collection:AsyncCollection, query, data:dict):
-        reuslt = await _collection.update_one(query, data, upsert=True)
-        return reuslt
+        await _collection.update_one(query, data, upsert=True)
+        record = await _collection.find_one(query)
+        return record
 
     @classmethod
     async def _get_cursor_size(cls, cursor:AsyncCursor):

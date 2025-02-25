@@ -24,11 +24,6 @@ class Case(BaseDatabaseObject):
         self.embed = self.create_basic_embed()
         super().__init__()
     
-    def __str__(self):
-        return str(self.__dict__)
-
-    def __repr__(self):
-        return str(self.__dict__)
 
     async def update(self, data):
         response = await self._update(MODERATION, {"_id":self._id}, data)
@@ -59,7 +54,7 @@ class Case(BaseDatabaseObject):
                 current_time = ''
         return total_duration
     
-    def create_basic_embed(self):
+    def create_basic_embed(self) -> Embed:
         description = f"""
         Target: <@{self.target_id}>
         Moderator: <@{self.moderator_id}>
@@ -72,23 +67,8 @@ class Case(BaseDatabaseObject):
         return case_embed
 
 
-
     @classmethod
     async def create_record(cls, guild_id:int, moderator_id:int, moderator_name:str, moderator_avatar:str, target_id:int, target_name:str, target_avatar:str, case_type:CaseType, reason:str="None Provided", evidence:list=None, duration:str=None) -> "Case":
-        """Creates a case and inserts it into the database
-
-        Args:
-            guild_id (int): the guild id for the case
-            moderator_id (int): the moderator id for the case
-            target_id (int): the target of the case
-            case_type (CaseType): the type of case
-            reason (str, optional): the reason for the case. Defaults to "None Provided".
-            evidence (list, optional): a list of str url's of evidence. Defaults to None.
-            duration (str, optional): the duration in 1h5m2s format. Defaults to None.
-
-        Returns:
-            Case: A case object representing this case
-        """
 
         data = {
             "guild_id":guild_id,

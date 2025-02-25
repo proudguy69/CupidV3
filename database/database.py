@@ -5,10 +5,16 @@ from pymongo.asynchronous.cursor import AsyncCursor
 client = AsyncMongoClient("mongodb://localhost:27017")
 DATABASE = client.get_database("cupidv3")
 MODERATION = DATABASE.get_collection("moderation")
+CONFIGURATION = DATABASE.get_collection("configuration")
 
 
 
 class BaseDatabaseObject:
+    def __str__(self):
+        return str(self.__dict__)
+
+    def __repr__(self):
+        return str(self.__dict__)
     
 
     async def _update(self,_collection:AsyncCollection, query, data:dict):

@@ -47,6 +47,10 @@ class GuildConfig(BaseDatabaseObject):
 
 
 
+    # idk maybe info about how the thing was updated ?
+    async def logger_embed(self):
+        config_update_embed = Embed()
+
 
     @classmethod
     async def create_record(cls, guild_id:int):

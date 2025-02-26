@@ -2,6 +2,8 @@ from discord.ext.commands import Bot, Context, is_owner
 from discord import Intents, utils
 import logging
 
+from extensions.dispatcher import dispatcher
+
 from settings import TOKEN
 
 class Cupidv3(Bot):
@@ -9,7 +11,8 @@ class Cupidv3(Bot):
         super().__init__(command_prefix='?', intents=Intents.all())
         utils.setup_logging()
         self.logger = logging.getLogger('CupidV3')
-        self.extns = ["extensions.moderation", "extensions.testing"]
+        self.extns = ["extensions.moderation", "extensions.testing", "extensions.dispatchlistener"]
+        dispatcher.set_bot(self)
     
     async def setup_hook(self):
         self.logger.info("Running setup_hook")

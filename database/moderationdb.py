@@ -1,11 +1,10 @@
 from database.database import BaseDatabaseObject, MODERATION
 from discord import Embed
 
+from extensions.dispatcher import dispatcher
 
 class CaseType:
     warn = "warn"
-
-
 
 class Case(BaseDatabaseObject):
     def __init__(self, data:dict):
@@ -69,7 +68,7 @@ class Case(BaseDatabaseObject):
 
     @classmethod
     async def create_record(cls, guild_id:int, moderator_id:int, moderator_name:str, moderator_avatar:str, target_id:int, target_name:str, target_avatar:str, case_type:CaseType, reason:str="None Provided", evidence:list=None, duration:str=None) -> "Case":
-
+        
         data = {
             "guild_id":guild_id,
             "moderator_id":moderator_id,
@@ -85,7 +84,9 @@ class Case(BaseDatabaseObject):
         }
 
         record = await BaseDatabaseObject._create_record(MODERATION, data)
-        return Case(record)
+        new_case = Case(record)
+        await dispatcher.dispatch(event_name="cases_create", new_case=new_case)
+        return new_case
         
 
 

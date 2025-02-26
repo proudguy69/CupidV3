@@ -1,2 +1,4 @@
 - [ ] Make an easier way of handling dispatched events that log to channels
- - [ ] Add logging_embeds to database classes that add detail
+- [ ] Add logging_embeds to database classes that add detail
+- [ ] Add levels system, incorperate it into guild config for level system events and what not.
+- [ ] Add image gen that goes with the bot theme, this is def subject to change idk what its gonna look like, just want it to look good. 

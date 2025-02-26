@@ -11,6 +11,8 @@ class DispatchListener(Cog):
     def __init__(self, bot:Bot):
         self.bot = bot
     
+    ## need an easier way to handle dispatched events and posting logs
+    
     @dispatcher.listen(event_name='cases_create')
     async def case_create(new_case:Case):
         config = await GuildConfig.get_record(new_case.guild_id)

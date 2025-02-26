@@ -1,0 +1,2 @@
+- [ ] Make an easier way of handling dispatched events that log to channels
+ - [ ] Add logging_embeds to database classes that add detail

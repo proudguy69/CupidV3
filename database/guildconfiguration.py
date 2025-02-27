@@ -16,6 +16,8 @@ class SubscribedEvents:
 
         self.config:list[int] = data.get('config_', []) # ALL Config events
         self.config_guild_create:list[int] = data.get('config_guild_create', [])
+
+        self.level_up:list[int] = data.get('level_up', [])
     
     
 

@@ -11,7 +11,7 @@ class Cupidv3(Bot):
         super().__init__(command_prefix='?', intents=Intents.all())
         utils.setup_logging()
         self.logger = logging.getLogger('CupidV3')
-        self.extns = ["extensions.moderation", "extensions.testing", "extensions.dispatchlistener"]
+        self.extns = ["extensions.moderation", "extensions.testing", "extensions.dispatchlistener", "extensions.levels"]
         dispatcher.set_bot(self)
     
     async def setup_hook(self):

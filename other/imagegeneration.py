@@ -1,14 +1,18 @@
 from PIL import Image, ImageDraw, ImageOps, ImageFont
+from io import BytesIO
+import requests
 
 class ImageGenerator():
 
     @classmethod
-    def generate_level_card(cls, uesrname, level, xp, rank):
+    def generate_level_card(cls, user_id, uesrname, avatar_url, level, xp, rank):
         # create card, get pfp, size it.
         card = Image.new("RGBA", (int(1440), int(350)), (0, 0, 0, 0))
         draw = ImageDraw.Draw(card)
-        draw.rounded_rectangle([0,0,1440,515], fill=(255,255,255,255),radius=50)
-        pfp = Image.open('other/average_discord_user_pfp.png')
+        draw.rounded_rectangle([0,0,1440,515], fill=0xffa6a1ff,radius=50)
+        r = requests.get(avatar_url)
+
+        pfp = Image.open(BytesIO(r.content))
         pfp = pfp.resize((212, 212))
         
         # create a mask to make the pfp circular
@@ -17,7 +21,7 @@ class ImageGenerator():
         draw.ellipse((0, 0, 212, 212), fill=255)  
         
         pfp.putalpha(mask)
-        card.paste(pfp, (50, 50), pfp)
+        card.paste(pfp, (50, 50), mask)
         
         draw = ImageDraw.Draw(card)
 
@@ -34,19 +38,19 @@ class ImageGenerator():
 
         xp_required = level*100
         xp_percentage = xp/xp_required
-        xp_progess = (int(1387*xp_percentage), 497)
+        xp_progess = (int(1387*xp_percentage), 275+50-3)
 
         xp_top_left = (53, 275+3)
-        xp_bottom_left = (113, 275+50-3)
+        xp_bottom_right = (113, 275+50-3)
 
 
 
         
         draw.rounded_rectangle([base_top_left, base_bottom_right], radius=25, fill=0xffa1a1a1, outline=00000000, width=3)
-        if xp_progess[0] < 113: draw.rounded_rectangle([xp_top_left, xp_bottom_left], radius=25, fill=0xffcd1aff)
+        if xp_progess[0] < 113: draw.rounded_rectangle([xp_top_left, xp_bottom_right], radius=25, fill=0xffcd1aff)
         else: draw.rounded_rectangle([xp_top_left, xp_progess], radius=25, fill=0xffcd1aff)
         draw.text((1440/2,300), f"XP: {xp}/{level*100}", font=arial_40, fill=0x000000, align='center', anchor="mm")
         
 
 
-        card.save('img.png')
+        card.save(f'images/{user_id}.png')

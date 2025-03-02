@@ -1,7 +1,7 @@
-from database.database import BaseDatabaseObject, MODERATION
+from Cupidv3Bot.database.database import BaseDatabaseObject, MODERATION
 from discord import Embed
 
-from extensions.dispatcher import dispatcher
+from Cupidv3Bot.extensions.dispatcher import dispatcher
 
 class CaseType:
     warn = "warn"

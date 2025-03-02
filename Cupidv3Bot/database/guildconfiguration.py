@@ -1,7 +1,7 @@
-from database.database import BaseDatabaseObject, CONFIGURATION
+from Cupidv3Bot.database.database import BaseDatabaseObject, CONFIGURATION
 from discord import Embed
 
-from extensions.dispatcher import dispatcher
+from Cupidv3Bot.extensions.dispatcher import dispatcher
 
 # channels listen to "events"
 

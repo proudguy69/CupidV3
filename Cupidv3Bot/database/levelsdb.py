@@ -1,5 +1,5 @@
-from database.database import BaseDatabaseObject, LEVELS
-from extensions.dispatcher import dispatcher
+from Cupidv3Bot.database.database import BaseDatabaseObject, LEVELS
+from Cupidv3Bot.extensions.dispatcher import dispatcher
 
 from discord import Embed, File
 from typing import Union

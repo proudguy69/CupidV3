@@ -2,16 +2,14 @@ from discord.ext.commands import Bot, Context, is_owner
 from discord import Intents, utils
 import logging
 
-from extensions.dispatcher import dispatcher
-
-from settings import TOKEN
+from Cupidv3Bot.extensions.dispatcher import dispatcher
 
 class Cupidv3(Bot):
     def __init__(self):
         super().__init__(command_prefix='?', intents=Intents.all())
         utils.setup_logging()
         self.logger = logging.getLogger('CupidV3')
-        self.extns = ["extensions.moderation", "extensions.testing", "extensions.dispatchlistener", "extensions.levels"]
+        self.extns = ["Cupidv3Bot.extensions.moderation", "Cupidv3Bot.extensions.testing", "Cupidv3Bot.extensions.dispatchlistener", "Cupidv3Bot.extensions.levels"]
         dispatcher.set_bot(self)
     
     async def setup_hook(self):
@@ -27,12 +25,10 @@ class Cupidv3(Bot):
             await self.reload_extension(ext)
 
 
-bot = Cupidv3()
+cupidbot = Cupidv3()
 
-@bot.command()
+@cupidbot.command()
 @is_owner()
 async def reload(context:Context):
-    await bot.reload_all()
+    await cupidbot.reload_all()
     await context.send("Done reloading all extensions!")
-
-bot.run(TOKEN)

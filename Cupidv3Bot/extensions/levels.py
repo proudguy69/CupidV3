@@ -3,7 +3,7 @@ from discord import Message
 
 from random import randint
 
-from database.levelsdb import Level
+from Cupidv3Bot.database.levelsdb import Level
 
 
 class Levels(Cog):

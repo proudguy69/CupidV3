@@ -1,7 +1,7 @@
 from discord.ext.commands import Context, Bot, Cog, command
 from discord import Member
 
-from database.moderationdb import Case, CaseType
+from Cupidv3Bot.database.moderationdb import Case, CaseType
 
 
 class Moderation(Cog):

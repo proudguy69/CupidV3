@@ -3,7 +3,7 @@
 - [ ] These embeds should be releavent, show changes, etc, this is hard ngl.
 - [ ] Add levels system, incorperate it into guild config for level system events and what not.
 - [ ] Add image gen that goes with the bot theme, this is def subject to change idk what its gonna look like, just want it to look good. 
-- [ ] Create matchingdb && classes
-- [ ] add database stuff and read/write to it from the server
+- [x] Create matchingdb && classes
+- [x] add database stuff and read/write to it from the server
 - [ ] dispatch server events to discord for moderator approval
 - [ ] essentially just worry about profile CREATION for now

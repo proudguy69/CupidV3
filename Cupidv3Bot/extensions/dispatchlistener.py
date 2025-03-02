@@ -1,8 +1,8 @@
 from discord.ext.commands import Bot, Cog
 
 from Cupidv3Bot.extensions.dispatcher import dispatcher
-from Cupidv3Bot.database.moderationdb import Case
-from Cupidv3Bot.database.guildconfiguration import GuildConfig
+from CupidV3Database.moderationdb import Case
+from CupidV3Database.guildconfiguration import GuildConfig
 
 
 

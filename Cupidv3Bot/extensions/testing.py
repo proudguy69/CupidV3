@@ -1,7 +1,7 @@
 from discord.ext.commands import Context, Bot, Cog, command
 from discord import Member, TextChannel
 
-from Cupidv3Bot.database.guildconfiguration import GuildConfig
+from CupidV3Database.guildconfiguration import GuildConfig
 
 
 # just commands to test

@@ -50,6 +50,15 @@ async def api_get_access():
     return jsonify({'success':state, 'message':message, 'token_data':token_data})
 
 
+
+@app.route('/api/update/profile', methods=['POST'])
+async def api_update_profile():
+    data = request.get_json()
+    print(data)
+    return jsonify({'success':True})
+
+
+
 @app.route('/api/logout')
 async def api_logout():
     session['token_data'] = None

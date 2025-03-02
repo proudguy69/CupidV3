@@ -1,6 +1,8 @@
 from flask import Flask, request, session, redirect, jsonify
 import requests
-from settings import CLIENT_SECRET
+
+from Cupidv3Backend.settings import CLIENT_SECRET
+from CupidV3Database.matchingdb import Profile
 
 app = Flask(__name__)
 app.secret_key = 'ahasujhfa'
@@ -53,4 +55,4 @@ async def api_logout():
     session['token_data'] = None
     return redirect('/')
 
-app.run(debug=True)
+#app.run(debug=True)

@@ -1,5 +1,6 @@
-from Cupidv3Bot.database.database import BaseDatabaseObject, LEVELS
+from CupidV3Database.database import BaseDatabaseObject, LEVELS
 from Cupidv3Bot.extensions.dispatcher import dispatcher
+from Cupidv3Bot.other.imagegeneration import ImageGenerator
 
 from discord import Embed, File
 from typing import Union
@@ -29,7 +30,6 @@ class Level(BaseDatabaseObject):
         if level_up: await dispatcher.dispatch(event_name="level_up", level=self)
 
     async def get_rank_card(self, username:str, avatar_url:str) -> tuple[Embed, File]:
-        from other.imagegeneration import ImageGenerator
         await asyncio.to_thread(ImageGenerator.generate_level_card, self.user_id, username, avatar_url, self.level, self.xp, 1)
         file = File(f'images/{self.user_id}.png', filename=f'{self.user_id}_rank_card.png')
         rank_embed = Embed(title="Rank", color=0xffa6a1)

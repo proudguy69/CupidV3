@@ -1,4 +1,4 @@
-from Cupidv3Bot.database.database import BaseDatabaseObject, MODERATION
+from CupidV3Database.database import BaseDatabaseObject, MODERATION
 from discord import Embed
 
 from Cupidv3Bot.extensions.dispatcher import dispatcher

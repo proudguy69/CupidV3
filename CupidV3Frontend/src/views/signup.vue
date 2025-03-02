@@ -34,7 +34,7 @@
             v-model="bio"
             ></v-textarea>
 
-            <v-btn>Submit</v-btn>
+            <v-btn class="bg-success">Submit</v-btn>
 
 
         </v-form>

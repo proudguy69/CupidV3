@@ -7,6 +7,20 @@
             :rules="nameRules"
             ></v-text-field>
 
+            <v-select
+            label="Age"
+            v-model="age"
+            :items="ageOptions"
+            :rules="selectRules"
+            ></v-select>
+
+            <v-text-field
+            v-if="age == '26+'"
+            label="Age Specified"
+            v-model="ageSpecified"
+            :rules="ageRules"
+            ></v-text-field>
+
             <v-text-field
             label="Pronouns"
             v-model="pronouns"
@@ -55,6 +69,8 @@ const user_data = inject('user_data')
 const form = ref(null)
 
 const name = ref('')
+const age = ref('Select')
+const ageSpecified = ref('')
 const pronouns = ref('')
 const gender = ref('Select')
 const genderSpecified = ref('')
@@ -75,11 +91,35 @@ const sexualityOptions = ref([
     'Asexual'
 ])
 
+const ageOptions = ref([
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    "26+"
+])
+
 
 const nameRules = ref([
     function characterLimit(value) {
         if (value.length >=3 && value.length <= 20) return true
         return 'Name must be between 3 and 20 characters'
+    }
+])
+
+const ageRules = ref([
+    function characterLimit(value) {
+        if (value.length == 2) return true
+        return 'must be a valid age'
     }
 ])
 
@@ -120,6 +160,8 @@ async function submitForm() {
     const data = JSON.stringify({
         user_id:user_data.value.id,
         name:name.value,
+        age: age.value,
+        age_specified: ageSpecified.value,
         pronouns:pronouns.value,
         gender:gender.value,
         gender_specified:genderSpecified.value,

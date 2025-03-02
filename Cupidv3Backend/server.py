@@ -53,8 +53,23 @@ async def api_get_access():
 
 @app.route('/api/update/profile', methods=['POST'])
 async def api_update_profile():
-    data = request.get_json()
-    print(data)
+    data:dict = request.get_json()
+    user_id = int(data.get('user_id'))
+    name = data.get('name')
+    age = data.get('age')
+    pronouns = data.get('pronouns')
+    gender = data.get('gender')
+    sexuality = data.get('sexuality')
+    bio = data.get('bio')
+
+    profile = await Profile.get_profile(user_id)
+    if profile:
+        # update
+        pass
+    else:
+        # create
+        profile = await Profile.create_profile(user_id,name,age,pronouns,gender,sexuality,bio)
+
     return jsonify({'success':True})
 
 

@@ -7,6 +7,7 @@ DATABASE = client.get_database("cupidv3")
 MODERATION = DATABASE.get_collection("moderation")
 CONFIGURATION = DATABASE.get_collection("configuration")
 LEVELS = DATABASE.get_collection("levels")
+MATCHING = DATABASE.get_collection("matching")
 
 
 

@@ -108,7 +108,7 @@ class GuildConfig(BaseDatabaseObject):
         else: config = GuildConfig(record)
         return config
     
-
+    
 
 
 

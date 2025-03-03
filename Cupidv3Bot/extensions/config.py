@@ -10,12 +10,20 @@ class GuildConfig(Cog):
         self.bot = bot
 
     @configure.command(name="channels", description="Configurations for the guild")
-    async def channels(self, ctx: Context, channel: TextChannel, setting: str):
+    async def channels(self, ctx: Context, channel: TextChannel, setting: str, set_type: str):
         guild_config = GuildConfig.get_record(ctx.guild.id)
         subscribed_events = guild_config.subscribed_events
 
-        if setting == "level_up":
-            subscribed_events.level_up.append(channel.id)
+        if not set_type.lower() == "add" or not set_type.lower() == "remove":
+            return await ctx.reply(
+                "Set type must be either `add` or `remove`"
+            )
+
+        if setting.lower() == "level_up":
+            if set_type.lower() == "add":
+                subscribed_events.level_up.append(channel.id)
+            else:
+                subscribed_events.level_up.remove(channel.id)
 
             await guild_config.update(
                 data={
@@ -24,8 +32,11 @@ class GuildConfig(Cog):
                     }
                 }
             )
-        elif setting == "case_logging":
-            subscribed_events.cases_create.append(channel.id)
+        elif setting.lower() == "case_logging":
+            if set_type.lower() == "add":
+                subscribed_events.cases_create.append(channel.id)
+            else:
+                subscribed_events.cases_create.remove(channel.id)
 
             await GuildConfig.update(
                 data={

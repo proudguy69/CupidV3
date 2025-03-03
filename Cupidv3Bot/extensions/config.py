@@ -3,11 +3,12 @@ from discord.ext.commands import Bot, Cog, Context, command, Group
 
 from CupidV3Database.guildconfiguration import GuildConfig
 
-configure = Group(name="config")
 
 class GuildConfig(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
+    
+    configure = Group(name="config")
 
     @configure.command(name="channels", description="Configurations for the guild")
     async def channels(self, ctx: Context, channel: TextChannel, setting: str, set_type: str):

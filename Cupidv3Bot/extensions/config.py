@@ -1,56 +1,57 @@
 from discord import TextChannel
-from discord.ext.commands import Bot, Cog, Context, command, Group
+from discord.ext.commands import Bot, Cog, Context, command, Group, group
 
 from CupidV3Database.guildconfiguration import GuildConfig
 
 
-class GuildConfig(Cog):
+from enum import Enum
+
+class Set(Enum):
+    add = "add"
+    remove = "remove"
+
+
+
+class Config(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
     
-    configure = Group(name="config")
+    @group(name="configure", invoke_without_command = True)
+    async def configure(self, ctx:Context):
+        await ctx.reply("test!")
 
-    @configure.command(name="channels", description="Configurations for the guild")
-    async def channels(self, ctx: Context, channel: TextChannel, setting: str, set_type: str):
-        guild_config = GuildConfig.get_record(ctx.guild.id)
-        subscribed_events = guild_config.subscribed_events
 
-        if not set_type.lower() == "add" or not set_type.lower() == "remove":
-            return await ctx.reply(
-                "Set type must be either `add` or `remove`"
-            )
+    @configure.command(name="channel", description="configures events for channels")
+    async def channel(self, ctx:Context, set:str, channel:TextChannel, event:str):
+        """adds / removes channels to events 
+        Args:
+            channel (TextChannel): the channel to configure
+            set (Set): add or remove
+            event (str): the event to add / remove from the channe
+        """
 
-        if setting.lower() == "level_up":
-            if set_type.lower() == "add":
-                subscribed_events.level_up.append(channel.id)
-            else:
-                subscribed_events.level_up.remove(channel.id)
+        guild_config = await GuildConfig.get_record(ctx.guild.id)
+        set = set.lower()
+        event = event.lower()
+        
+        match (set):
+            case 'add':
+                success, msg = await guild_config.subscribe(event, channel.id)
+            case 'remove':
+                success, msg = await guild_config.unsubscribe(event, channel.id)
+            case _:
+                return await ctx.reply("set can only be \"add\" or \"remove\"")
+        
+        
+        await ctx.reply(msg)
+        
 
-            await guild_config.update(
-                data={
-                    "$set": {
-                        subscribed_events.__dict__
-                    }
-                }
-            )
-        elif setting.lower() == "case_logging":
-            if set_type.lower() == "add":
-                subscribed_events.cases_create.append(channel.id)
-            else:
-                subscribed_events.cases_create.remove(channel.id)
+    @channel.error
+    async def channel_err(self, ctx:Context, err):
+        await ctx.send(f"```{err}```")
 
-            await GuildConfig.update(
-                data={
-                    "$set": {
-                        subscribed_events.__dict__
-                    }
-                }
-            )
-        else:
-            return await ctx.reply(
-                f"There is no such thing as {setting}"
-            )
-        await ctx.reply(f"Successfully set `{setting}` to `{channel.mention}`")
 
-async def setup(bot: Bot):
-    await bot.add_cog(GuildConfig(bot))
+        
+
+async def setup(bot:Bot):
+    await bot.add_cog(Config(bot))

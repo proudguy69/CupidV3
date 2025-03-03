@@ -25,9 +25,9 @@ class ImageGenerator():
         
         draw = ImageDraw.Draw(card)
 
-        arial_bold_90 = ImageFont.truetype('/System/Library/Fonts/Supplemental/Arial Bold.ttf', size=90)
-        arial_75 = ImageFont.truetype('/System/Library/Fonts/Supplemental/Arial.ttf', size=75)
-        arial_40 = ImageFont.truetype('/System/Library/Fonts/Supplemental/Arial.ttf', size=40)
+        arial_bold_90 = ImageFont.truetype('CupidV3Bot/other/Arial Bold.ttf', size=90)
+        arial_75 = ImageFont.truetype('CupidV3Bot/other/Arial.ttf', size=75)
+        arial_40 = ImageFont.truetype('CupidV3Bot/other/Arial.ttf', size=40)
 
         draw.text((262+16,50),uesrname,fill=0x000000, font=arial_bold_90)
         draw.text((262+16,160),f'Level: {level} Rank: {rank}',fill=0x000000, font=arial_75)

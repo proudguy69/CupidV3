@@ -3,6 +3,7 @@ from discord.ext.commands import Bot, Cog
 from Cupidv3Bot.extensions.dispatcher import dispatcher
 from CupidV3Database.moderationdb import Case
 from CupidV3Database.guildconfiguration import GuildConfig
+from CupidV3Database.levelsdb import Level
 
 
 
@@ -20,6 +21,14 @@ class DispatchListener(Cog):
             channels = [dispatcher.bot.get_channel(cid) for cid in config.subscribed_events.cases_create]
             for channel in channels:
                 await channel.send(embed=new_case.embed)
+
+    @dispatcher.listen(event_name='level_up')
+    async def case_create(level:Level):
+        config = await GuildConfig.get_record(level.guild_id)
+        if config.subscribed_events.level_up:
+            channels = [dispatcher.bot.get_channel(cid) for cid in config.subscribed_events.level_up]
+            for channel in channels:
+                await channel.send(content=f'<@{level.user_id}>',embed=level.level_up_embed)
 
 
 

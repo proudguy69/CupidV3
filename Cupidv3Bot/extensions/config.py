@@ -52,5 +52,5 @@ class GuildConfig(Cog):
             )
         await ctx.reply(f"Successfully set `{setting}` to `{channel.mention}`")
 
-def setup(bot: Bot):
-    bot.add_cog(GuildConfig(bot))
+async def setup(bot: Bot):
+    await bot.add_cog(GuildConfig(bot))

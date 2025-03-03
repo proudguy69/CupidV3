@@ -15,6 +15,7 @@ class Level(BaseDatabaseObject):
         self.user_id = data.get('user_id')
         self.xp = data.get('xp')
         self.level = data.get('level')
+        self.level_up_embed = self.create_levelup_embed()
 
     
     async def increase_xp(self, amount:int):
@@ -41,6 +42,15 @@ class Level(BaseDatabaseObject):
     async def update(self, data:dict): 
         new_data = await self._update(LEVELS, {"_id":self._id}, data)
         self.__init__(new_data)
+
+    def create_levelup_embed(self):
+        description = f"""
+        Congrats <@{self.user_id}>! You leveled up!
+        {self.level-1} -> {self.level}
+        """
+        embed = Embed(title="Level Up",description=description)
+        return embed
+        
     
     @classmethod
     async def get_level(cls, guild_id:int, user_id:int) -> "Level":

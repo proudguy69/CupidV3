@@ -9,15 +9,91 @@ from Cupidv3Bot.extensions.dispatcher import dispatcher
 #     "cases_create": [chan_id1,...]
 # }
 
+
 class SubscribedEvents:
     def __init__(self, data:dict):
-        self.cases:list[int] = data.get('cases_', []) # all cases events
+        self.cases:list[int] = data.get('cases', []) # all cases events
         self.cases_create:list[int] = data.get('cases_create', [])
 
-        self.config:list[int] = data.get('config_', []) # ALL Config events
-        self.config_guild_create:list[int] = data.get('config_guild_create', [])
+        self.guild_config:list[int] = data.get('guild_config', []) # ALL Config events
+        self.guild_config_edit:list[int] = data.get('guild_config_edit', [])
 
         self.level_up:list[int] = data.get('level_up', [])
+
+    def add(self, event:str, channel_id:int) -> tuple[bool, str]:
+        """adds a channel_id to an event
+
+        Args:
+            event (str): the name of the event
+            channel_id (int): the channel id to remove
+
+        Returns:
+            tuple[bool, str]: True/False if success, str message if not successfull
+        """
+        success = True
+        channel = None
+        match (event):
+            # case events
+            case 'cases_':
+                channel = self.cases
+            case 'cases_create':
+                channel = self.cases_create
+            # guild config events
+            case 'config_':
+                channel = self.guild_config
+            case 'config_guild_create':
+                channel = self.guild_config_edit
+            # level up events
+            case 'level_up':
+                channel = self.level_up
+            case _:
+                return False, f'`{event}` doesn\'t exists!'
+        
+        
+        if channel_id in channel:
+            return False, f"<#{channel_id}> is already in `{event}`"
+        
+        channel.append(channel_id)
+        return success, f'Successfully added <#{channel_id}> to `{event}`'
+    
+    def remove(self, event:str, channel_id:int) -> bool:
+        """adds a channel_id to an event
+
+        Args:
+            event (str): the name of the event
+            channel_id (int): the channel id to remove
+
+        Returns:
+            tuple[bool, str]: True/False if success, str message if not successfull
+        """
+        success = True
+        channel = None
+        match (event):
+            # case events
+            case 'cases_':
+                channel = self.cases
+            case 'cases_create':
+                channel = self.cases_create
+            # guild config events
+            case 'config_':
+                channel = self.guild_config
+            case 'config_guild_create':
+                channel = self.guild_config_edit
+            # level up events
+            case 'level_up':
+                channel = self.level_up
+            case _:
+                return False, f'`{event}` doesn\'t exists!'
+        
+        
+        if channel_id not in channel:
+            return False, f"<#{channel_id}> is not in `{event}`"
+        
+        channel.append(channel_id)
+        return success, f'Successfully removed <#{channel_id}> from `{event}`'
+        
+    
+ 
     
     
 
@@ -45,20 +121,35 @@ class GuildConfig(BaseDatabaseObject):
         return result
     
     
-    async def subscribe(self, channel_id, event):
-        """work in progress
-        """
-        state = False
-        match (event):
-            case 'cases_create':
-                state = True
-                self.subscribed_events.cases_create.append(channel_id)
-            case 'config_guild_create':
-                state = True
-                self.subscribed_events.config_guild_create.append(channel_id)
+    async def subscribe(self, event:str, channel_id:str):
+        """subscribes a channel to an event
+
+        Args:
+            event (str): the name of the event
+            channel_id (str): the channel id to subscribe the event too
         
-        if state: await self.update({"$set":{"subscribed_events":self.subscribed_events.__dict__}})
-        return state
+        Returns:
+            tuple[bool, str]: true on success, message on failure.
+        """
+        success, msg = self.subscribed_events.add(event, channel_id)
+        if success: await self.update({"$set":{"subscribed_events":self.subscribed_events.__dict__}})
+        return success, msg
+    
+    async def unsubscribe(self, event:str, channel_id:str) -> tuple[bool, str]:
+        """unsubscribes a channel from an event
+
+        Args:
+            event (str): the name of the event
+            channel_id (str): the channel id to unsubscribe from the event
+        
+        Returns:
+            tuple[bool, str]: true on success, message on failure.
+        """
+        success, msg = self.subscribed_events.remove(event, channel_id)
+        if success: await self.update({"$set":{"subscribed_events":self.subscribed_events.__dict__}})
+        return success, msg
+
+
 
 
 
@@ -89,8 +180,6 @@ class GuildConfig(BaseDatabaseObject):
 
         record = await BaseDatabaseObject._create_record(CONFIGURATION, data)
         config = GuildConfig(record)
-        
-        dispatcher.dispatch(event_name="config_guild_create", config=config)
         return GuildConfig(record)
 
     @classmethod

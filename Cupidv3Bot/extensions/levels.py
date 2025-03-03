@@ -13,6 +13,7 @@ class Levels(Cog):
 
     @Cog.listener(name="on_message")
     async def on_message(self, message:Message):
+        if message.content.startswith('?'): return
         author = message.author
         guild = message.guild
         if author.bot: return

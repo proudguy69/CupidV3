@@ -11,30 +11,27 @@ class GuildConfig(Cog):
 
     @configure.command(name="channels", description="Configurations for the guild")
     async def channels(self, ctx: Context, channel: TextChannel, setting: str):
-        guild_config = GuildConfig({"guild_id": ctx.guild.id})
-        if setting == "level_up":
-            subscribed_events = guild_config.subscribed_events.level_up
+        guild_config = GuildConfig.get_record(ctx.guild.id)
+        subscribed_events = guild_config.subscribed_events
 
-            subscribed_events.append({"channel_id": channel.id})
+        if setting == "level_up":
+            subscribed_events.level_up.append(channel.id)
 
             await guild_config.update(
                 data={
                     "$set": {
-                        "subscribed_events": {
-                            "level_up": subscribed_events
-                        }
+                        subscribed_events.__dict__
                     }
                 }
             )
         elif setting == "case_logging":
-            subscribed_events = guild_config.subscribed_events.cases
+            subscribed_events.cases_create.append(channel.id)
 
-            subscribed_events.append({"channel_id": channel.id})
             await GuildConfig.update(
                 data={
                     "$set": {
                         "subscribed_events": {
-                            "cases_": subscribed_events
+                            "cases_create": subscribed_events
                         }
                     }
                 }

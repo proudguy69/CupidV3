@@ -30,9 +30,7 @@ class GuildConfig(Cog):
             await GuildConfig.update(
                 data={
                     "$set": {
-                        "subscribed_events": {
-                            "cases_create": subscribed_events
-                        }
+                        subscribed_events.__dict__
                     }
                 }
             )

@@ -25,7 +25,8 @@ class Profile(BaseDatabaseObject):
             "sexuality":sexuality,
             "bio":bio,
         }
-        await cls._create_record(MATCHING, data)
+        record = await cls._create_record(MATCHING, data)
+        return Profile(record)
     
     @classmethod
     async def get_profile(cls, user_id:int):

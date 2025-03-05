@@ -3,8 +3,19 @@ import requests
 
 from Cupidv3Backend.settings import CLIENT_SECRET
 from CupidV3Database.matchingdb import Profile
+from Cupidv3Server.flaskclient import Client
 
-app = Flask(__name__)
+import asyncio
+
+class App(Flask):
+    def __init__(self):
+        super().__init__(__name__)
+    
+    async def set_client(self, client:Client):
+        self.client = client
+
+
+app = App()
 app.secret_key = 'ahasujhfa'
 
 
@@ -24,7 +35,6 @@ def exchange_code(code):
   }
   r = requests.post('%s/oauth2/token' % API_ENDPOINT, data=data, headers=headers, auth=(CLIENT_ID, CLIENT_SECRET))
   return r.json()
-
 
 
 
@@ -69,6 +79,7 @@ async def api_update_profile():
     else:
         # create
         profile = await Profile.create_profile(user_id,name,age,pronouns,gender,sexuality,bio)
+        await app.client.emit({"event":"update_profile", "profile":profile.__dict__})
 
     return jsonify({'success':True})
 

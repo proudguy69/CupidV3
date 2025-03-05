@@ -12,9 +12,14 @@ async def main():
     t = threading.Thread(target=client.start)
     t.start()
 
-    app.run(debug=True)
+    try:
+        app.run(debug=True)
+    except KeyboardInterrupt:
+        await client.close()
     
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except: pass
     

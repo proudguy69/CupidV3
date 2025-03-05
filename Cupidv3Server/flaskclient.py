@@ -3,6 +3,8 @@ from websockets.asyncio.client import connect, ClientConnection
 from websockets.exceptions import ConnectionClosed
 import asyncio
 
+
+
 import threading
 
 from discord.utils import setup_logging
@@ -18,16 +20,19 @@ class Client:
         self.logger.info(f"Initializing client connection to {uri}")
         self.events = {}
         self.ws:ClientConnection = None
+        self.close_signal = False
         
 
     async def connect(self):
         async with connect(self.uri) as websocket:
+            if self.close_signal: return
             self.ws = websocket
             await asyncio.gather(self.recv_messages(websocket))
 
     async def recv_messages(self, websocket:ClientConnection):
         try:
             async for message in websocket:
+                if self.close_signal: break
                 data = json.loads(message)
         except ConnectionClosed:
             self.logger.warning('Connection Closed')
@@ -36,8 +41,16 @@ class Client:
         package = json.dumps(data)
         await self.ws.send(package)
 
+    async def close(self):
+        self.ws.close(code=1000, reason='I want to close')
+        self.close_signal = True
+
+
     def start(self):
-        asyncio.run(self.connect())
+        try:
+            asyncio.run(self.connect())
+        except:
+            pass
         
 
 

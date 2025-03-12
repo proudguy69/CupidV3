@@ -40,8 +40,9 @@ class Level(BaseDatabaseObject):
 
 
     async def update(self, data:dict): 
-        new_data = await self._update(LEVELS, {"_id":self._id}, data)
-        self.__init__(new_data)
+        await self._update(LEVELS, {"_id":self._id}, data)
+        record = await LEVELS.find_one({"_id":self._id})
+        self.__init__(record)
 
     def create_levelup_embed(self):
         description = f"""

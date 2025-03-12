@@ -5,7 +5,7 @@ from Cupidv3Bot.bot import cupidbot
 from Cupidv3Bot.settings import TOKEN
 
 
-from Cupidv3Backend.server import app
+from Cupidv3Backend.main import app
 
 def run_flask():
     app.run(debug=True, use_reloader=False)

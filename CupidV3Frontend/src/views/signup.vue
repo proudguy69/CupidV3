@@ -55,6 +55,7 @@
             ></v-textarea>
 
             <v-btn class="bg-success" type="submit">Submit</v-btn>
+            <v-btn class="bg-error ml-8" @click="deleteProfile">Delete</v-btn>
 
 
         </v-form>
@@ -62,9 +63,20 @@
 </template>
 
 <script setup>
-import { inject, ref } from 'vue';
+import router from '@/router';
+import { inject, onMounted, ref } from 'vue';
 
-const user_data = inject('user_data')
+const userProfile = inject('userProfile')
+if (!userProfile.value.username) {
+    setTimeout(() => {
+        if (!userProfile.value.username) {
+            router.push('/')
+        } else {
+            
+        }
+    }, 1000)
+    router.push('/')
+}
 
 const form = ref(null)
 
@@ -152,13 +164,35 @@ const bioRules = ref([
 ])
 
 
+async function get_matching_profile() {
+    if (!userProfile.value.id) { return }
+    const response = await fetch(`/api/profiles/get/${userProfile.value.id}`)
+    const response_json = await response.json()
+    if (!response_json.success) { return }
+    const profile = JSON.parse(response_json.matching_profile)
+    name.value = profile.name
+    age.value = profile.age
+    pronouns.value = profile.pronouns
+    sexuality.value = profile.sexuality
+    gender.value = profile.gender
+    bio.value = profile.bio
+}
 
+onMounted(async () => {
+    get_matching_profile()
+})
+
+async function deleteProfile() {
+    const response = await fetch(`/api/profiles/delete/${userProfile.value.id}`)
+    const response_json = await response.json()
+    console.log(response_json)
+}
 
 async function submitForm() {
     await form.value.validate()
     if (!form.value.isValid) {return}
     const data = JSON.stringify({
-        user_id:user_data.value.id,
+        user_id:userProfile.value.id,
         name:name.value,
         age: age.value,
         age_specified: ageSpecified.value,
@@ -168,8 +202,9 @@ async function submitForm() {
         sexuality:sexuality.value,
         bio:bio.value,
     })
+    console.log(userProfile.value.id)
 
-    const response = await fetch('/api/update/profile', {
+    const response = await fetch(`/api/profiles/update/${userProfile.value.id}`, {
         method: 'POST',
         headers: {"Content-Type":'application/json'},
         body: data

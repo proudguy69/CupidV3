@@ -206,6 +206,7 @@ async function submitForm() {
     if (!form.value.isValid) {return}
     text.value = "Submitting Form..."
     snackbar.value = true
+
     const data = JSON.stringify({
         user_id:userProfile.value.id,
         name:name.value,
@@ -216,6 +217,9 @@ async function submitForm() {
         gender_specified:genderSpecified.value,
         sexuality:sexuality.value,
         bio:bio.value,
+        avatar_hash:userProfile.value.avatar,
+        banner_hash:userProfile.value.banner,
+        username:userProfile.value.username
     })
 
     const response = await fetch(`/api/profiles/update/${userProfile.value.id}`, {
@@ -223,6 +227,7 @@ async function submitForm() {
         headers: {"Content-Type":'application/json'},
         body: data
     })
+
     const response_json = await response.json()
     if (!response_json.success) {
         text.value = response_json.message

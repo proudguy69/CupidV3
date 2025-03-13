@@ -12,6 +12,9 @@ class Profile(BaseDatabaseObject):
         self.gender = data.get('gender')
         self.sexuality = data.get('sexuality')
         self.bio = data.get('bio')
+        self.username = data.get('username')
+        self.avatar_url = data.get('avatar_url')
+        self.banner_url = data.get('banner_url')
         self.embed = self.create_embed()
     
 
@@ -22,30 +25,43 @@ class Profile(BaseDatabaseObject):
 
     def create_embed(self, color:int=None):
         description = f"""
-        ❥﹒User: <@{self.user_id}>
-        ❥﹒Name: {self.name}
-        ❥﹒Age: {self.age}
-        ❥﹒Pronouns: {self.pronouns}
-        ❥﹒Gender: {self.gender}
-        ❥﹒Sexuality: {self.sexuality}
+        ❥﹒User: <@{self.user_id}> | `{self.username}`
+        ❥﹒Name: `{self.name}`
+        ❥﹒Age: `{self.age}`
+        ❥﹒Pronouns: `{self.pronouns}`
+        ❥﹒Gender: `{self.gender}`
+        ❥﹒Sexuality: `{self.sexuality}`
         ❥﹒Bio: ```{self.bio}```
         """
         embed = Embed(title="Profile", description=description, color=color)
+        try:
+            embed.set_author(name=self.username, icon_url=self.avatar_url)
+        except:
+            embed.set_author(name=self.username)
+        
+        try:
+            embed.set_image(url=self.banner_url)
+        except:
+            pass
+
         return embed
 
 
     @classmethod
-    async def create_profile(cls, user_id:int, name:str, age:str, pronouns:str, gender:str,sexuality:str,bio:str):
+    async def create_profile(cls, user_id:int, name:str, age:str, pronouns:str, gender:str, sexuality:str, bio:str, username:str, avatar_url:str=None, banner_url:str=None):
         record = await MATCHING.find_one({'user_id':user_id})
         if record: return Profile(user_id)
         data = {
             "user_id":user_id,
+            "username":username,
             "name":name,
             "age": age,
             "pronouns":pronouns,
             "gender":gender,
             "sexuality":sexuality,
             "bio":bio,
+            "avatar_url":avatar_url,
+            "banner_url":banner_url
         }
         await cls._create_record(MATCHING, data)
     
@@ -55,7 +71,7 @@ class Profile(BaseDatabaseObject):
         
     
     @classmethod
-    async def get_profile(cls, user_id:int, create_if_not_exists:bool=False, *, name:str='', age:str='', pronouns:str='', gender:str='', sexuality:str='', bio:str='') -> tuple["Profile", bool]:
+    async def get_profile(cls, user_id:int, create_if_not_exists:bool=False, *, name:str='', age:str='', pronouns:str='', gender:str='', sexuality:str='', bio:str='', username:str='',avatar_url:str=None, banner_url:str=None) -> tuple["Profile", bool]:
         """gets a profile, creates one with the values provided if provided
 
         Args:
@@ -74,7 +90,7 @@ class Profile(BaseDatabaseObject):
         record = await MATCHING.find_one({'user_id':user_id})
         if not record:
             if create_if_not_exists:
-                return await cls.create_profile(user_id, name=name, age=age, pronouns=pronouns, gender=gender, sexuality=sexuality, bio=bio), True
+                return await cls.create_profile(user_id, name=name, age=age, pronouns=pronouns, gender=gender, sexuality=sexuality, bio=bio, username=username, avatar_url=avatar_url, banner_url=banner_url), True
             else:
                 return None, False
         return Profile(record), False

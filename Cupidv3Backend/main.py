@@ -25,6 +25,9 @@ class BaseProfile(BaseModel):
     gender_specified:str|None
     sexuality:str
     bio:str
+    username:str
+    avatar_hash:str|None
+    banner_hash:str|None
 
 setup_logging()
 # constants 
@@ -129,6 +132,7 @@ async def apu_0auth_profile(request:Request, session_id: Optional[str] = Cookie(
     try:
         if session_id:
             data = json.loads(redis_client.get(session_id))
+            data['access_token'] = 'UNREADABLE'
             return {'success':True, 'profile':data}
         else:
             return {'success':False, 'message':'User is not logged in!'}
@@ -160,6 +164,8 @@ async def api_profiles_get_id(user_id:int):
     """
     profile, _ = await Profile.get_profile(user_id)
     if profile:
+        profile_dict = profile.__dict__
+        profile_dict['embed'] = None
         matching_profile = json.dumps(profile.__dict__)
         return {'success':True, 'matching_profile':matching_profile}
     else: return {'success':False}
@@ -197,6 +203,11 @@ async def api_profiles_update(user_id:int, base_profile:BaseProfile, request:Req
     try:
         age = base_profile.age_specified if base_profile.age_specified else base_profile.age
         gender = base_profile.gender_specified if base_profile.gender_specified else base_profile.gender
+        a_hash = base_profile.avatar_hash
+        b_hash = base_profile.banner_hash
+        avatar_url = f'https://cdn.discordapp.com/avatars/{user_id}/{a_hash}.png' if base_profile.avatar_hash else  ''
+        banner_url = f'https://cdn.discordapp.com/banners/{user_id}/{b_hash}.png' if base_profile.banner_hash else  ''
+
         profile, created = await Profile.get_profile(
             user_id,
             True,
@@ -205,9 +216,13 @@ async def api_profiles_update(user_id:int, base_profile:BaseProfile, request:Req
             pronouns=base_profile.pronouns,
             gender=gender,
             sexuality=base_profile.sexuality,
-            bio=base_profile.bio)
+            bio=base_profile.bio,
+            username=base_profile.username,
+            avatar_url=avatar_url,
+            banner_url=banner_url
+            )
         
-        if created: 
+        if not created: 
             await profile.update({"$set": {
                 "name":base_profile.name,
                 "age":base_profile.age,
@@ -215,7 +230,12 @@ async def api_profiles_update(user_id:int, base_profile:BaseProfile, request:Req
                 "gender":base_profile.gender,
                 "sexuality":base_profile.sexuality,
                 "bio":base_profile.bio,
+                "username":base_profile.username,
+                "avatar_url":avatar_url,
+                "banner_url":banner_url
             }})
+        
+
         
         packet = {'event':"profile_update", "profile_id":profile.user_id}
         seralized_packet = json.dumps(packet)

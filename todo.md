@@ -6,7 +6,7 @@
 - [x] Create matchingdb && classes
 - [x] add database stuff and read/write to it from the server
 - [ ] add a "are you sure" to the delete button
-- [ ] Store avatar and banner URLS in profile db obj
-- [ ] dispatch server events to discord for moderator approval
+- [x] Store avatar and banner URLS in profile db obj
+- [x] dispatch server events to discord for moderator approval
 - [ ] essentially just worry about profile CREATION for now
-- [ ] Just use a damn webhook thats sends the ui, not this stupid bs
+- [-] Just use a damn webhook thats sends the ui, not this stupid bs

@@ -5,5 +5,6 @@
 - [x] Add image gen that goes with the bot theme, this is def subject to change idk what its gonna look like, just want it to look good. 
 - [x] Create matchingdb && classes
 - [x] add database stuff and read/write to it from the server
+- [ ] add a "are you sure" to the delete button
 - [ ] dispatch server events to discord for moderator approval
 - [ ] essentially just worry about profile CREATION for now

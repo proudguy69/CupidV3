@@ -1,7 +1,8 @@
 from Cupidv3Backend.settings import CLIENT_SECRET
 from CupidV3Database.matchingdb import Profile
 
-from fastapi import FastAPI, Response, Cookie, Request  
+from fastapi import FastAPI, Response, Cookie, Request
+from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 from starlette.responses import RedirectResponse
 from aiohttp import ClientSession, BasicAuth
@@ -21,7 +22,7 @@ class BaseProfile(BaseModel):
     age_specified:str|None
     pronouns:str
     gender:str
-    gender_specified:str
+    gender_specified:str|None
     sexuality:str
     bio:str
 
@@ -88,6 +89,16 @@ async def cache_user_data(exchange_data:dict) -> str:
 # varibles
 app = FastAPI(debug=True)
 redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True)
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # routes
@@ -184,13 +195,15 @@ async def api_profiles_update(user_id:int, base_profile:BaseProfile, request:Req
         dict: weather the update was successful or not
     """
     try:
+        age = base_profile.age_specified if base_profile.age_specified else base_profile.age
+        gender = base_profile.gender_specified if base_profile.gender_specified else base_profile.gender
         profile, created = await Profile.get_profile(
             user_id,
             True,
             name=base_profile.name,
-            age=base_profile.age,
+            age=age,
             pronouns=base_profile.pronouns,
-            gender=base_profile.gender,
+            gender=gender,
             sexuality=base_profile.sexuality,
             bio=base_profile.bio)
         

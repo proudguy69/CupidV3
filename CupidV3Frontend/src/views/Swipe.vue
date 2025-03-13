@@ -8,7 +8,7 @@
 
                 <v-card-title>
                     <div class="card-title">
-                        <img class="icon" src="https://cdn.discordapp.com/avatars/1267552151454875751/04f7c138b467b06919a3084e5c115832.webp?size=512"></img>
+                        <img class="icon" src="https://cdn.discordapp.com/avatars/1267552151454875751/9bf9a1155e9640ba12a48a7df00131f7.png?size=512"></img>
                         <span class="name">Oliver</span>
                     </div>
                     <v-chip>20</v-chip>

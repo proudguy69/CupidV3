@@ -7,7 +7,11 @@
             LOGIN
         </v-btn>
 
-        <v-btn class="ml-auto mr-4" variant="tonal" @click="toSignup" v-if="userProfile.username">
+        <v-btn class="ml-auto mr-4" variant="tonal" v-if="userProfile.username">
+            Swipe (Coming soon)
+        </v-btn>
+
+        <v-btn class="mr-4" variant="tonal" @click="toSignup" v-if="userProfile.username">
             Create Account
         </v-btn>
 
@@ -27,7 +31,7 @@ import icon from '@/assets/DSW.svg'
 import router from '@/router';
 import { inject, onMounted, watch } from 'vue';
 
-const AUTHURL = "https://discord.com/oauth2/authorize?client_id=1343727517529542718&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fapi%2F0auth%2Fexchange&scope=identify+guilds+email"
+const AUTHURL = "https://discord.com/oauth2/authorize?client_id=1343727517529542718&response_type=code&redirect_uri=https%3A%2F%2Fcupidbot.xyz%2Fapi%2F0auth%2Fexchange&scope=identify+guilds+email"
 const userProfile = inject('userProfile')
 
 function toHome() {

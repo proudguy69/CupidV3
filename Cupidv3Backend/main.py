@@ -33,7 +33,7 @@ setup_logging()
 # constants 
 API_ENDPOINT = 'https://discord.com/api/v10'
 CLIENT_ID = '1343727517529542718'
-REDIRECT_URI = 'http://localhost:5173/api/0auth/exchange'
+REDIRECT_URI = 'https://cupidbot.xyz/api/0auth/exchange'
 
 # global functions
 async def exchange_code(code:str):
@@ -146,7 +146,7 @@ async def apu_0auth_clear():
     Returns:
         RedirectResponse: a redirect that sets the cookie
     """
-    redis_client.setex()
+    redis_client.setex("session_id", 1, value='')
     response = RedirectResponse('/')
     response.set_cookie('session_id', None, expires=1)
     return response

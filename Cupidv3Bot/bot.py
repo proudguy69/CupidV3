@@ -8,6 +8,7 @@ import json
 from threading import Thread
 
 from Cupidv3Bot.extensions.dispatcher import dispatcher
+from Cupidv3Bot.ui.profileui import SubmissionView
 from CupidV3Database.matchingdb import Profile
 
 class Cupidv3(Bot):
@@ -23,6 +24,7 @@ class Cupidv3(Bot):
         for ext in self.extns:
             self.logger.info(f"loading extension: \"{ext}\"")
             await self.load_extension(ext)
+        self.add_view(SubmissionView(self))
         asyncio.create_task(self.start_redis())
         self.logger.info("Done Running setup_hook")
         
@@ -59,8 +61,8 @@ class Cupidv3(Bot):
         profile_embed = profile.embed
         profile_embed.color = 0xFDFD96
         #return
-        msg = await submissions_channel.send(embed=profile_embed)
-        await profile.update({"message_id":msg.id})
+        msg = await submissions_channel.send(embed=profile_embed, view=SubmissionView(self))
+        await profile.update({"$set":{"message_id":msg.id}})
 
                 
 

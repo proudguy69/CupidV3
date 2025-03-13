@@ -59,6 +59,12 @@
 
 
         </v-form>
+        <v-snackbar
+        v-model="snackbar"
+        :timeout="2000"
+        >
+        {{ text }}
+        </v-snackbar>
     </div>
 </template>
 
@@ -89,6 +95,12 @@ const genderSpecified = ref('')
 const sexuality = ref('Select')
 const bio = ref('')
 
+// snackbar stuff
+const snackbar = ref(false)
+const text = ref('Error Occured')
+
+
+// options stuff
 const genderOptions = ref([
     'Male',
     'Female',
@@ -121,6 +133,7 @@ const ageOptions = ref([
 ])
 
 
+// validation rules
 const nameRules = ref([
     function characterLimit(value) {
         if (value.length >=3 && value.length <= 20) return true
@@ -191,6 +204,8 @@ async function deleteProfile() {
 async function submitForm() {
     await form.value.validate()
     if (!form.value.isValid) {return}
+    text.value = "Submitting Form..."
+    snackbar.value = true
     const data = JSON.stringify({
         user_id:userProfile.value.id,
         name:name.value,
@@ -202,7 +217,6 @@ async function submitForm() {
         sexuality:sexuality.value,
         bio:bio.value,
     })
-    console.log(userProfile.value.id)
 
     const response = await fetch(`/api/profiles/update/${userProfile.value.id}`, {
         method: 'POST',
@@ -210,7 +224,13 @@ async function submitForm() {
         body: data
     })
     const response_json = await response.json()
-    console.log(response_json)
+    if (!response_json.success) {
+        text.value = response_json.message
+        snackbar.value = true
+    } else {
+        text.value = "Profile Updated Successfully!"
+        snackbar.value = true
+    }
     
 }
 

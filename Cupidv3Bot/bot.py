@@ -40,9 +40,8 @@ class Cupidv3(Bot):
         event_name = data.get('event')
         match (event_name):
             case 'profile_update':
-                print(data)
                 profile_id = data.get('profile_id')
-                profile, _ = await Profile.get_profile(profile_id)
+                await dispatcher.dispatch("profile_update", profile_id)
                 
 
 

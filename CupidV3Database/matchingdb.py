@@ -1,4 +1,5 @@
 from CupidV3Database.database import BaseDatabaseObject, MATCHING
+from discord import Embed
 
 
 class Profile(BaseDatabaseObject):
@@ -11,12 +12,27 @@ class Profile(BaseDatabaseObject):
         self.gender = data.get('gender')
         self.sexuality = data.get('sexuality')
         self.bio = data.get('bio')
+        self.embed = self.create_embed()
     
 
     async def update(self, data:dict):
         await self._update(MATCHING, {'_id':self._id}, data)
         record = await MATCHING.find_one({'_id':self._id})
         self.__init__(record)
+
+    def create_embed(self, color:int=None):
+        description = f"""
+        ❥﹒User: <@{self.user_id}>
+        ❥﹒Name: {self.name}
+        ❥﹒Age: {self.age}
+        ❥﹒Pronouns: {self.pronouns}
+        ❥﹒Gender: {self.gender}
+        ❥﹒Sexuality: {self.sexuality}
+        ❥﹒Bio: ```{self.bio}```
+        """
+        embed = Embed(title="Profile", description=description, color=color)
+        return embed
+
 
     @classmethod
     async def create_profile(cls, user_id:int, name:str, age:str, pronouns:str, gender:str,sexuality:str,bio:str):

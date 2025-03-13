@@ -1,6 +1,7 @@
 from discord.ext.commands import Bot, Cog
 
 from Cupidv3Bot.extensions.dispatcher import dispatcher
+from CupidV3Database.matchingdb import Profile
 from CupidV3Database.moderationdb import Case
 from CupidV3Database.guildconfiguration import GuildConfig
 from CupidV3Database.levelsdb import Level
@@ -29,6 +30,12 @@ class DispatchListener(Cog):
             channels = [dispatcher.bot.get_channel(cid) for cid in config.subscribed_events.level_up]
             for channel in channels:
                 await channel.send(content=f'<@{level.user_id}>',embed=level.level_up_embed)
+    
+    @dispatcher.listen(event_name="profile_update")
+    async def profile_update(profile_id:int):
+        profile, _ = await Profile.get_profile(profile_id)
+        channel = dispatcher.bot.get_channel(1307474634559459360)
+        await channel.send(embed=profile.embed)
 
 
 

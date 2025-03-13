@@ -9,3 +9,4 @@
 - [ ] Store avatar and banner URLS in profile db obj
 - [ ] dispatch server events to discord for moderator approval
 - [ ] essentially just worry about profile CREATION for now
+- [ ] Just use a damn webhook thats sends the ui, not this stupid bs

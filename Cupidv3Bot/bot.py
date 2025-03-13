@@ -59,7 +59,8 @@ class Cupidv3(Bot):
         profile_embed = profile.embed
         profile_embed.color = 0xFDFD96
         #return
-        await submissions_channel.send(embed=profile_embed)
+        msg = await submissions_channel.send(embed=profile_embed)
+        await profile.update({"message_id":msg.id})
 
                 
 

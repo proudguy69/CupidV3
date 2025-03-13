@@ -206,7 +206,7 @@ async def api_profiles_update(user_id:int, base_profile:BaseProfile, request:Req
         a_hash = base_profile.avatar_hash
         b_hash = base_profile.banner_hash
         avatar_url = f'https://cdn.discordapp.com/avatars/{user_id}/{a_hash}.png' if base_profile.avatar_hash else  ''
-        banner_url = f'https://cdn.discordapp.com/banners/{user_id}/{b_hash}.png' if base_profile.banner_hash else  ''
+        banner_url = f'https://cdn.discordapp.com/banners/{user_id}/{b_hash}.png?size=1024' if base_profile.banner_hash else  ''
 
         profile, created = await Profile.get_profile(
             user_id,

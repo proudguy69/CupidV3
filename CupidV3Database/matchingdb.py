@@ -15,6 +15,9 @@ class Profile(BaseDatabaseObject):
         self.username = data.get('username')
         self.avatar_url = data.get('avatar_url')
         self.banner_url = data.get('banner_url')
+        self.message_id = data.get('message_id')
+        self.posted_channel = data.get('posted_channel')
+        self.posted_message = data.get('posted_message')
         self.embed = self.create_embed()
     
 

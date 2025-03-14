@@ -2,22 +2,25 @@
     <v-app-bar>
         <v-btn v-slot:prepend @click="toHome">Home</v-btn>
         
-        <v-btn class="mr-4 ml-auto blurpal" variant="tonal" @click="toAuth" v-if="!userProfile.username">
+        
+        <v-btn size="x-small" class="mr-1 blurpal"  variant="tonal" @click="toAuth" v-if="!userProfile.username">
             <v-icon class="mr-1"><img :src="icon"></v-icon>
             LOGIN
         </v-btn>
 
-        <v-btn class="ml-auto mr-4" variant="tonal" v-if="userProfile.username">
+        <v-btn size="x-small" class="ml-auto mr-1" variant="tonal" v-if="userProfile.username">
             Swipe (Coming soon)
         </v-btn>
 
-        <v-btn class="mr-4" variant="tonal" @click="toSignup" v-if="userProfile.username">
+        <v-btn size="x-small" class="mr-1" variant="tonal" @click="toSignup" v-if="userProfile.username">
             Create Account
         </v-btn>
 
-        <v-btn class="bg-error mr-4" variant="tonal" @click="removeAuth" v-if="userProfile.username">
+        <v-btn size="x-small" class="bg-error mr-1" variant="tonal" @click="removeAuth" v-if="userProfile.username">
             LOGOUT
         </v-btn>
+        
+        
 
         <!--Need to find out if we have a profile or not-->
 
@@ -63,6 +66,14 @@ function toSignup() {
 .blurpal {
     background-color: #5865F2;
     color: white;
+}
+
+.container {
+    display: flex;
+}
+
+button {
+    height: 0.5rem;
 }
 
 </style>

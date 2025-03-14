@@ -60,8 +60,22 @@ class Cupidv3(Bot):
         profile, _ = await Profile.get_profile(data.get('profile_id'))
         profile_embed = profile.embed
         profile_embed.color = 0xFDFD96
-        #return
+        
+        # check for prev message
+        try:
+            prev_msg = await submissions_channel.fetch_message(profile.message_id)
+            await prev_msg.delete()
+        except: pass
+
+        try:
+            prev_channel = self.get_channel(profile.posted_channel)
+            prev_msg = await prev_channel.fetch_message(profile.posted_message)
+            await prev_msg.delete()
+        except: pass
+
         msg = await submissions_channel.send(embed=profile_embed, view=SubmissionView(self))
+
+            
         await profile.update({"$set":{"message_id":msg.id}})
 
                 

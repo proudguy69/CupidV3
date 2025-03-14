@@ -21,11 +21,24 @@ class SubmissionView(View):
         profile_embed.add_field(value=f'Approved by: {interaction.user.mention}', name='Approved')
         await interaction.message.edit(embed=profile_embed, view=self)
         await interaction.followup.send("Approved!", ephemeral=True)
+
         try:
             user = self.bot.get_user(profile.user_id)
             await user.send(f"Your profile was Approved! Swiping will come very soon! be excited for it :)")
         except: 
             await interaction.followup.send(f"I couldnt dm {user.mention}!")
+
+        match (profile.gender):
+            case 'Male':
+                channel = self.bot.get_channel(1307474580008599663)
+            case 'Female':
+                channel = self.bot.get_channel(1307474598060883968)
+            case _:
+                channel = self.bot.get_channel(1307480874119462952)
+        
+        profile_embed.color = 0xFFA1DC
+        posted_msg = await channel.send(embed=profile_embed)
+        profile.update({"$set":{'posted_channel':posted_msg.channel.id,'posted_message':posted_msg.id}})
     
     @button(label="Deny", style=ButtonStyle.red, custom_id='deny_button')
     async def deny_button(self, interaction:Interaction, button:Button):

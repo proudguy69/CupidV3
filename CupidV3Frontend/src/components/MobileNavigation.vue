@@ -10,23 +10,53 @@
             <v-icon icon="mdi-login"/>
             <span>Discord Login</span>
         </v-btn>
-
+        
         <v-btn value="Swipe" v-if="loggedIn" @click="toSwipe" size="x-small">
             <v-icon icon="mdi-gesture-swipe" />
             <span>Swipe</span>
         </v-btn>
 
-        <v-btn value="Account" v-if="loggedIn" @click="toSignup" size="x-small">
+        <v-btn value="Account" v-if="loggedIn && !superMobile" @click="toSignup" size="x-small">
             <v-icon icon="mdi-account" />
             <span>Account</span>
         </v-btn>
 
-        <v-btn value="Matches" v-if="loggedIn" size="x-small">
+        <v-menu v-if="loggedIn && superMobile">
+            <template v-slot:activator="{ props }">
+                <v-btn v-bind="props" size="x-small">
+                    <v-icon icon="mdi-account" />
+                    <span>Account Menu</span>
+                </v-btn>
+            </template>
+            <v-list>
+                <v-list-item>
+                    <v-btn variant="text">
+                        <v-icon icon="mdi-account" />
+                        <span>Account</span>
+                    </v-btn>
+                </v-list-item>
+                <v-list-item>
+                    <v-btn variant="text">
+                        <v-icon icon="mdi-account-check" />
+                        <span>Matches</span>
+                    </v-btn>
+                </v-list-item>
+                <v-list-item>
+                    <v-btn variant="text">
+                        <v-icon icon="mdi-message-text" />
+                        <span>Message</span>
+                    </v-btn>
+                </v-list-item>
+            </v-list>
+        </v-menu>
+        
+
+        <v-btn value="Matches" v-if="loggedIn && !superMobile" size="x-small">
             <v-icon icon="mdi-account-check" />
             <span>Matches</span>
         </v-btn>
 
-        <v-btn value="Message" v-if="loggedIn" size="x-small">
+        <v-btn value="Message" v-if="loggedIn  && !superMobile" size="x-small">
             <v-icon icon="mdi-message-text" />
             <span>Message</span>
         </v-btn>
@@ -47,6 +77,7 @@ const AUTHURL = "https://discord.com/oauth2/authorize?client_id=1343727517529542
 
 const loggedIn = inject('loggedIn')
 const userProfile = inject('userProfile')
+const superMobile = inject('superMobile')
 
 
 function toHome() {

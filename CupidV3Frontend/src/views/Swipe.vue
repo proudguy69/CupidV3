@@ -1,46 +1,42 @@
 <template>
     <div class="container mx-auto">
-        <v-card width="400">
-            <v-img
-                src="https://cdn.discordapp.com/banners/1267552151454875751/b8aeb5cee79f6728ab89f5521b891ad4.webp?size=512"
-                cover
-                class="text-white">
-
-                <v-card-title>
-                    <div class="card-title">
-                        <img class="icon" src="https://cdn.discordapp.com/avatars/1267552151454875751/9bf9a1155e9640ba12a48a7df00131f7.png?size=512"></img>
-                        <span class="name">Oliver</span>
-                    </div>
-                    <v-chip>20</v-chip>
-                    <v-chip class="ml-3">Male</v-chip>
-                    <v-chip class="ml-3">He/Him</v-chip>
-                    <v-chip class="ml-3">Heterosexual</v-chip>
-                    
-                </v-card-title>
-            </v-img>
-            
-            <v-card-text>
-                orangegreencat
-            </v-card-text>
-            
-            <v-card-text>
-                I’m 20, going to the Air Force in February. No I do not believe in killing people or war, in fact I’m anti war, it’s just a way better place to be In terms of money (they litteraly pay for your home, like free housing? Hell yeah) I’ll be doing cyber sec
-                <br> <br>
-                I’m a programmer i love to code. Huge big time yapper btw. I love to call and talk to people. I’m not on discord much anymore tho.
-                I’m currently a manager of a car wash. I love space and the galaxy as well as aviation. I love photography and I take LOTS of photos too.. so feel free to ask to see them
-                saving this for later
-            </v-card-text>
-        <div class="buttons">
-            <v-btn variant="tonal" class="bg-error"><- Reject</v-btn>
-            <v-btn variant="tonal" class="bg-success">Match -></v-btn>
-        </div>
-        
-        </v-card>
+        <ProfileCard
+        :avatar_url="profileData.avatar_url"
+        :banner_url="profileData.banner_url"
+        :profile_name="profileData.name"
+        :profile_age="profileData.age"
+        :profile_pronouns="profileData.pronouns"
+        :profile_gender="profileData.gender"
+        :profile_sexuality="profileData.sexuality"
+        :profile_username="profileData.username"
+        :profile_bio="profileData.bio"
+        />
     </div>
     
 </template>
 
 <script setup>
+import ProfileCard from '@/components/ProfileCard.vue';
+import { inject, onMounted, ref, watch } from 'vue';
+
+const profileData = ref({})
+const userProfile = inject('userProfile')
+
+watch(userProfile, async (new_profile) => {
+    //if (profileData) { return }
+    const response = await fetch(`/api/profiles/get/${userProfile.value.id}`)
+    const response_json = await response.json()
+    profileData.value = JSON.parse(response_json.matching_profile)
+    console.log(profileData.value)
+})
+
+onMounted(async () => {
+    if (!userProfile.value.id) {return}
+    const response = await fetch(`/api/profiles/get/${userProfile.value.id}`)
+    const response_json = await response.json()
+    profileData.value = JSON.parse(response_json.matching_profile)
+    console.log(profileData.value)
+})
 
 </script>
 
@@ -65,7 +61,11 @@
 }
 
 .container {
-    margin-top: 8rem;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .v-chip {

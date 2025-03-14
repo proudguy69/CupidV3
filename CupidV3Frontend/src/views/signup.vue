@@ -59,13 +59,13 @@
 
 
         </v-form>
-        <v-snackbar
+    </div>
+    <v-snackbar
         v-model="snackbar"
         :timeout="2000"
         >
         {{ text }}
-        </v-snackbar>
-    </div>
+    </v-snackbar>
 </template>
 
 <script setup>
@@ -245,19 +245,29 @@ async function submitForm() {
 <style scoped>
 
 .container {
-    width: 80vw;
-    margin: auto;
-    margin-top: 8rem;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 4rem;
+}
+
+@media (min-width: 100px) {
+    .v-form {
+        width: 95vw;
+    }
 }
 
 @media (min-width: 600px) {
-    .container {
-        width: 65vw;
+    .v-form {
+        width: 70vw;
     }
 }
 
 @media (min-width: 800px) {
-    .container {
+    .v-form {
         width: 50vw;
     }
 }

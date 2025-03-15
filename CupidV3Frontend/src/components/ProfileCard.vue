@@ -4,7 +4,7 @@
         <v-img
             :src="banner_url"
             cover
-            class="text-white">
+            class="text-white bg-blurpal">
 
             <v-card-title>
                 <div class="card-title">
@@ -35,7 +35,8 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, defineEmits } from 'vue';
+
 
 const props = defineProps({
     avatar_url:String,
@@ -48,6 +49,8 @@ const props = defineProps({
     profile_sexuality:String,
     profile_bio:String
 })
+
+const emit = defineEmits(['match', 'reject'])
 
 const active = ref(true)
 const green = ref(false)
@@ -62,7 +65,7 @@ onMounted(() => {
 
 async function match() {
     green.value = true
-
+    emit('match')
     setTimeout(() => {
         active.value = false
         green.value = false
@@ -74,6 +77,7 @@ async function match() {
 }
 
 async function reject() {
+    emit('reject')
     red.value = true
 
     setTimeout(() => {
@@ -90,6 +94,14 @@ async function reject() {
 
 
 <style>
+
+.v-card-text {
+    white-space: pre-line;
+}
+
+.bg-blurpal {
+    background-color: #E0E3FF;
+}
 
 .buttons {
     display: flex;

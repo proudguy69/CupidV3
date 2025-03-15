@@ -19,12 +19,31 @@ class Profile(BaseDatabaseObject):
         self.posted_channel = data.get('posted_channel')
         self.posted_message = data.get('posted_message')
         self.embed = self.create_embed()
+        self.__dict__.pop('embed')
     
 
     async def update(self, data:dict):
         await self._update(MATCHING, {'_id':self._id}, data)
         record = await MATCHING.find_one({'_id':self._id})
         self.__init__(record)
+
+    async def get_compatible_profiles(self) -> list["Profile"]:
+        compatible_profiles:list[Profile] = []
+        all_profiles = [Profile(record) async for record in MATCHING.find()]
+        # only age check for now
+
+        for profile in all_profiles:
+            if self.age >= 18:
+                if profile.age >= 18:
+                    compatible_profiles.append(profile)
+            else:
+                difference = profile.age - self.age
+                if difference >= -2 or difference <= 2:
+                    compatible_profiles.append(profile)
+        
+        return compatible_profiles
+
+
 
     def create_embed(self, color:int=None):
         description = f"""

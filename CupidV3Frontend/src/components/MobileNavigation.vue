@@ -6,7 +6,7 @@
             <span>Home</span>
         </v-btn>
 
-        <v-btn value="Login" v-if="!loggedIn" @click="toAuth" size="x-small">
+        <v-btn value="otherlogin" v-if="!loggedIn" @click="toAuth" size="x-small">
             <v-icon icon="mdi-login"/>
             <span>Discord Login</span>
         </v-btn>
@@ -30,7 +30,7 @@
             </template>
             <v-list>
                 <v-list-item>
-                    <v-btn variant="text">
+                    <v-btn variant="text" @click="toSignup"> 
                         <v-icon icon="mdi-account" />
                         <span>Account</span>
                     </v-btn>
@@ -72,7 +72,7 @@
 <script setup>
 import router from '@/router';
 import { ref, inject } from 'vue';
-const AUTHURL = "https://discord.com/oauth2/authorize?client_id=1343727517529542718&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fapi%2F0auth%2Fexchange&scope=identify+guilds+email"
+const AUTHURL = "https://discord.com/oauth2/authorize?client_id=1343727517529542718&response_type=code&redirect_uri=https%3A%2F%2Fcupidbot.xyz%2Fapi%2F0auth%2Fexchange&scope=identify+guilds+email"
 
 
 const loggedIn = inject('loggedIn')
@@ -108,7 +108,7 @@ function toSwipe() {
 
 </script>
 
-<style>
+<style scoped>
 
 span {
     font-size: x-small;

@@ -28,6 +28,8 @@ class BaseProfile(BaseModel):
     username:str
     avatar_hash:str|None
     banner_hash:str|None
+    avatar_url:str|None
+    banner_url:str|None
 
 setup_logging()
 # constants 
@@ -169,6 +171,24 @@ async def api_profiles_get_id(user_id:int):
         matching_profile = json.dumps(profile.__dict__)
         return {'success':True, 'matching_profile':matching_profile}
     else: return {'success':False}
+
+
+@app.get('/api/profiles/get/{user_id}/compatible')
+async def api_profiles_get_compatible(user_id:int):
+   
+    profile, _ = await Profile.get_profile(user_id)
+    compatible = await profile.get_compatible_profiles()
+
+    packet = {'success':True, 'profiles':[prof.__dict__ for prof in compatible]}
+    return packet
+
+@app.post('/api/profiles/{user_id}/match')
+async def api_profiles_get_compatible(user_id:int, request:Request):
+    profile_data = json.loads(await request.body())
+    print(profile_data)
+   
+    return {'success':True}
+
 
 @app.get('/api/profiles/delete/{user_id}')
 async def api_profiles_delete(user_id:int, session_id: Optional[str] = Cookie(None)):

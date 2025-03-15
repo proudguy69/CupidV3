@@ -219,8 +219,12 @@ async function submitForm() {
         bio:bio.value,
         avatar_hash:userProfile.value.avatar,
         banner_hash:userProfile.value.banner,
+        avatar_url:'',
+        banner_url:'',
         username:userProfile.value.username
     })
+
+    console.log(data)
 
     const response = await fetch(`/api/profiles/update/${userProfile.value.id}`, {
         method: 'POST',

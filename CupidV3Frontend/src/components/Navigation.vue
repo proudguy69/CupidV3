@@ -10,6 +10,11 @@
             <span>Home</span>
         </v-btn>
 
+        <v-btn value="login" v-if="!loggedIn" @click="toAuth">
+            <v-icon icon="mdi-login"/>
+            <span>Login</span>
+        </v-btn>
+
         <v-btn value="Swipe" v-if="loggedIn" @click="toSwipe">
             <v-icon icon="mdi-gesture-swipe" />
             <span>Swipe</span>

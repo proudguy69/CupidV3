@@ -167,9 +167,9 @@ async def api_profiles_get_id(user_id:int):
     """
     profile, _ = await Profile.get_profile(user_id)
     if profile:
-        profile_dict = profile.__dict__
+        profile_dict = profile.data
         profile_dict['embed'] = None
-        matching_profile = json.dumps(profile.__dict__)
+        matching_profile = json.dumps(profile.data)
         return {'success':True, 'matching_profile':matching_profile}
     else: return {'success':False}
 
@@ -182,7 +182,7 @@ async def api_profiles_get_compatible(user_id:int):
     profile, _ = await Profile.get_profile(user_id)
     compatible = await profile.get_compatible_profiles()
 
-    packet = {'success':True, 'profiles':[prof.__dict__ for prof in compatible]}
+    packet = {'success':True, 'profiles':[prof.data for prof in compatible]}
     return packet
 
 @app.post('/api/profiles/{user_id}/match')

@@ -84,6 +84,7 @@ function getRandomProfile(profiles) {
 async function getProfiles() {
     const response = await fetch(`/api/profiles/get/${userProfile.value.id}/compatible`)
     const response_json = await response.json()
+    console.log(response_json)
     return response_json.profiles
 }
 

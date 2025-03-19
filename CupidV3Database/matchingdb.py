@@ -3,14 +3,12 @@ from discord import Embed
 
 
 class Filters:
-    def __init__(self, data:dict):
-        self.age:list[int] = data.get('age', None)
+    def __init__(self, data:dict, age:int):
+        self.age:list[int] = data.get('age', [age-2, age+2])
 
     @classmethod
     def check_age_compatibility(cls, profile:"Profile", age:int):
         age_filters = profile.filters.age
-        
-        if age_filters == None: return True
 
         min_age = age_filters[0]
         max_age = age_filters[1]
@@ -38,6 +36,12 @@ class Filters:
         else: return False
 
 
+    def __str__(self):
+        return str(self.__dict__)
+    
+    def __repr__(self):
+        return str(self.__dict__)
+
 
 class Profile(BaseDatabaseObject):
     def __init__(self, data:dict):
@@ -55,7 +59,8 @@ class Profile(BaseDatabaseObject):
         self.message_id = data.get('message_id')
         self.posted_channel = data.get('posted_channel')
         self.posted_message = data.get('posted_message')
-        self.filters = Filters(data.get('filters', {}))
+        self.filters = Filters(data.get('filters', {}), self.age)
+        self.data = data
     
 
     async def update(self, data:dict):

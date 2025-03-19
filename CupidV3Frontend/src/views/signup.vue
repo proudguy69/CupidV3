@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <v-form ref="form" @submit.prevent="submitForm">
+        <v-form ref="form" class="top-form" @submit.prevent="submitForm">
             <v-text-field
             label="Name"
             v-model="name"
@@ -54,10 +54,25 @@
             :rules="bioRules"
             ></v-textarea>
 
-            <v-btn class="bg-success" type="submit">Submit</v-btn>
-            <v-btn class="bg-error ml-8" @click="deleteProfile">Delete</v-btn>
+            <v-btn class="bg-success" type="submit">Submit Profile</v-btn>
+            <v-btn class="bg-error ml-8" @click="deleteProfile">Delete Profile</v-btn>
 
 
+        </v-form>
+        <v-form>
+            <h1>Filters</h1>
+            <h2>Age Filter</h2>
+            <Slider v-model="filters.age"/>
+            <v-select
+            chips
+            label="Gender Filter"
+            :items="genderFilterOptions"
+            multiple
+            />
+
+            <v-btn>
+                Save Filters
+            </v-btn>
         </v-form>
     </div>
     <v-snackbar
@@ -70,30 +85,27 @@
 
 <script setup>
 import router from '@/router';
-import { inject, onMounted, ref } from 'vue';
+import { computed, inject, onMounted, ref, watch } from 'vue';
+import Slider from '@/components/Slider.vue';
 
 const userProfile = inject('userProfile')
-if (!userProfile.value.username) {
-    setTimeout(() => {
-        if (!userProfile.value.username) {
-            router.push('/')
-        } else {
-            
-        }
-    }, 1000)
-    router.push('/')
-}
+
+
 
 const form = ref(null)
 
 const name = ref('')
-const age = ref('Select')
+const age = ref(16)
 const ageSpecified = ref('')
 const pronouns = ref('')
 const gender = ref('Select')
 const genderSpecified = ref('')
 const sexuality = ref('Select')
 const bio = ref('')
+
+const filters = ref({
+    age:[age.value-2, age.value+2]
+})
 
 // snackbar stuff
 const snackbar = ref(false)
@@ -130,6 +142,12 @@ const ageOptions = ref([
     24,
     25,
     "26+"
+])
+
+const genderFilterOptions = ref([
+    'Male',
+    'Female',
+    'Other'
 ])
 
 
@@ -195,6 +213,10 @@ onMounted(async () => {
     get_matching_profile()
 })
 
+watch(userProfile, (new_pr) => {
+    get_matching_profile()
+})
+
 async function deleteProfile() {
     const response = await fetch(`/api/profiles/delete/${userProfile.value.id}`)
     const response_json = await response.json()
@@ -254,8 +276,8 @@ async function submitForm() {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding-bottom: 4rem;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
 }
 
 @media (min-width: 100px) {

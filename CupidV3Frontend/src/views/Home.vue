@@ -17,10 +17,10 @@
 import { inject, ref } from 'vue';
 
 const loggedIn = inject('loggedIn')
-const AUTHURL = "https://discord.com/oauth2/authorize?client_id=1343727517529542718&response_type=code&redirect_uri=https%3A%2F%2Fcupidbot.xyz%2Fapi%2F0auth%2Fexchange&scope=identify+guilds+email"
+const oauth_uri = inject('oauth_uri')
 
 function toAuth() {
-    window.location.href = AUTHURL
+    window.location.href = oauth_uri.value
 }
 
 </script>

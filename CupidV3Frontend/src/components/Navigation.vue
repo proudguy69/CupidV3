@@ -49,7 +49,7 @@ import icon from '@/assets/DSW.svg'
 import router from '@/router';
 import { inject, onMounted, watch } from 'vue';
 
-const AUTHURL = "https://discord.com/oauth2/authorize?client_id=1343727517529542718&response_type=code&redirect_uri=https%3A%2F%2Fcupidbot.xyz%2Fapi%2F0auth%2Fexchange&scope=identify+guilds+email"
+const oauth_uri = inject('oauth_uri')
 const userProfile = inject('userProfile')
 const loggedIn = inject('loggedIn')
 
@@ -59,7 +59,6 @@ function toHome() {
 
 
 function removeAuth() {
-    console.log('logout')
     fetch('/api/0auth/clear')
     userProfile.value = {}
     loggedIn.value = false
@@ -67,7 +66,8 @@ function removeAuth() {
 }
 
 function toAuth() {
-    window.location.href = AUTHURL
+    console.log(oauth_uri.value)
+    window.location.href = oauth_uri.value
 }
 
 

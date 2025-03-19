@@ -15,8 +15,18 @@ const mobile = ref(false)
 const superMobile = ref(false)
 const userProfile = ref({})
 const loggedIn = ref(false)
+const dev_uri = 'https://discord.com/oauth2/authorize?client_id=1343727517529542718&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fapi%2F0auth%2Fexchange&scope=identify+guilds+email'
+const prod_uri = 'https://discord.com/oauth2/authorize?client_id=1343727517529542718&response_type=code&redirect_uri=https%3A%2F%2Fcupidbot.xyz%2Fapi%2F0auth%2Fexchange&scope=identify+guilds+email'
+const dev = true
+const oauth_uri = ref('')
 
+if (dev) {
+    oauth_uri.value = dev_uri
+} else {
+    oauth_uri.value = prod_uri
+}
 
+provide('oauth_uri', oauth_uri)
 
 async function loadProfile() {
     const response = await fetch('/api/0auth/profile')

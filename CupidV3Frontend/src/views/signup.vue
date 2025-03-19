@@ -59,6 +59,7 @@
 
 
         </v-form>
+        <!--
         <v-form>
             <h1>Filters</h1>
             <h2>Age Filter</h2>
@@ -74,6 +75,7 @@
                 Save Filters
             </v-btn>
         </v-form>
+        -->
     </div>
     <v-snackbar
         v-model="snackbar"

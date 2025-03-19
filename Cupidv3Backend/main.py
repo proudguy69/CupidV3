@@ -176,6 +176,8 @@ async def api_profiles_get_id(user_id:int):
 
 @app.get('/api/profiles/get/{user_id}/compatible')
 async def api_profiles_get_compatible(user_id:int):
+
+    # TODO: CHANGE TO RANDOMLY GRAB 1 PROFILE AT A TIME
    
     profile, _ = await Profile.get_profile(user_id)
     compatible = await profile.get_compatible_profiles()

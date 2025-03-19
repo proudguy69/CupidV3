@@ -2,6 +2,43 @@ from CupidV3Database.database import BaseDatabaseObject, MATCHING
 from discord import Embed
 
 
+class Filters:
+    def __init__(self, data:dict):
+        self.age:list[int] = data.get('age', None)
+
+    @classmethod
+    def check_age_compatibility(cls, profile:"Profile", age:int):
+        age_filters = profile.filters.age
+        
+        if age_filters == None: return True
+
+        min_age = age_filters[0]
+        max_age = age_filters[1]
+
+        if age > max_age or age < min_age: return False
+
+        return True
+
+    @classmethod
+    def check_compatibility(cls, profile_a:"Profile", profile_b:"Profile"):
+        """returns true if profile_a is compatible with profile_b
+
+        Args:
+            profile_a (Profile): the profile to run the check on
+            profile_b (Profile): the profile to check compatibility for
+
+        Returns:
+            bool: true if a is compatible with b
+        """
+        user_check = profile_a.user_id != profile_b.user_id
+        age_check = cls.check_age_compatibility(profile_a, profile_b.age)
+
+
+        if age_check and user_check: return True
+        else: return False
+
+
+
 class Profile(BaseDatabaseObject):
     def __init__(self, data:dict):
         self._id = data.get('_id')
@@ -18,8 +55,7 @@ class Profile(BaseDatabaseObject):
         self.message_id = data.get('message_id')
         self.posted_channel = data.get('posted_channel')
         self.posted_message = data.get('posted_message')
-        self.embed = self.create_embed()
-        self.__dict__.pop('embed')
+        self.filters = Filters(data.get('filters', {}))
     
 
     async def update(self, data:dict):
@@ -29,17 +65,13 @@ class Profile(BaseDatabaseObject):
 
     async def get_compatible_profiles(self) -> list["Profile"]:
         compatible_profiles:list[Profile] = []
-        all_profiles = [Profile(record) async for record in MATCHING.find()]
+        all_profiles = [Profile(record) async for record in MATCHING.find({'approved':True})]
         # only age check for now
 
         for profile in all_profiles:
-            if self.age >= 18:
-                if profile.age >= 18:
-                    compatible_profiles.append(profile)
-            else:
-                difference = profile.age - self.age
-                if difference >= -2 or difference <= 2:
-                    compatible_profiles.append(profile)
+            if profile.user_id == self.user_id: continue
+            if not Filters.check_compatibility(self, profile): continue
+            compatible_profiles.append(profile)
         
         return compatible_profiles
 

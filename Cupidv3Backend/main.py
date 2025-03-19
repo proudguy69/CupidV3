@@ -35,7 +35,7 @@ setup_logging()
 # constants 
 API_ENDPOINT = 'https://discord.com/api/v10'
 CLIENT_ID = '1343727517529542718'
-REDIRECT_URI = 'https://cupidbot.xyz/api/0auth/exchange'
+REDIRECT_URI = 'http://localhost:5173/api/0auth/exchange'
 
 # global functions
 async def exchange_code(code:str):
@@ -120,6 +120,7 @@ async def api_0auth_exchange(code:str):
     exchange_data:dict = await exchange_code(code)
 
     if exchange_data.get("error"):
+        return exchange_data
         response = RedirectResponse(url="https://discord.com/oauth2/authorize?client_id=1343727517529542718&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fapi%2F0auth%2Fexchange&scope=identify+guilds+email")
         return response
     
@@ -270,7 +271,7 @@ async def api_profiles_update(user_id:int, base_profile:BaseProfile, request:Req
     
 
 def main():
-    uvicorn.run(app, port=5000)
+    uvicorn.run(app, port=5001)
 
 if __name__ == "__main__":
     main()

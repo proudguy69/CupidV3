@@ -38,7 +38,7 @@ class SubmissionView(View):
         
         profile_embed.color = 0xFFA1DC
         posted_msg = await channel.send(embed=profile_embed)
-        profile.update({"$set":{'posted_channel':posted_msg.channel.id,'posted_message':posted_msg.id}})
+        await profile.update({"$set":{'posted_channel':posted_msg.channel.id,'posted_message':posted_msg.id}})
     
     @button(label="Deny", style=ButtonStyle.red, custom_id='deny_button')
     async def deny_button(self, interaction:Interaction, button:Button):

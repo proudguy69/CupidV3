@@ -5,69 +5,74 @@
             label="Name"
             v-model="name"
             :rules="nameRules"
-            ></v-text-field>
+            />
 
             <v-select
             label="Age"
             v-model="age"
             :items="ageOptions"
             :rules="selectRules"
-            ></v-select>
+            />
 
             <v-text-field
             v-if="age == '26+'"
             label="Age Specified"
             v-model="ageSpecified"
             :rules="ageRules"
-            ></v-text-field>
+            />
 
             <v-text-field
             label="Pronouns"
             v-model="pronouns"
             :rules="pronounRules"
-            ></v-text-field>
+            />
 
             <v-select
             label="Gender"
             v-model="gender"
             :items="genderOptions"
             :rules="selectRules"
-            ></v-select>
+            />
 
             <v-text-field
             v-if="gender=='Other'"
             label="Gender (Specify)"
             v-model="genderSpecified"
             :rules="genderRules"
-            ></v-text-field>
+            />
 
             <v-select
             label="Sexuality"
             v-model="sexuality"
             :items="sexualityOptions"
             :rules="selectRules"
-            ></v-select>
+            />
 
             <v-textarea
             label="Bio"
             v-model="bio"
             :rules="bioRules"
-            ></v-textarea>
+            />
 
             <v-btn class="bg-success" type="submit">Submit Profile</v-btn>
             <v-btn class="bg-error ml-8" @click="deleteProfile">Delete Profile</v-btn>
-
-
         </v-form>
         
-        <v-form>
+        <v-form class="filters-form">
             <h1>Filters</h1>
-            <h2>Age Filter</h2>
+            <v-label>Age Filter</v-label>
             <Slider v-model="filters.age"/>
             <v-select
             chips
             label="Gender Filter"
             :items="genderFilterOptions"
+            multiple
+            />
+
+            <v-select
+            chips
+            label="Sexuality Filter"
+            :items="sexualityOptions"
             multiple
             />
 
@@ -151,6 +156,8 @@ const genderFilterOptions = ref([
     'Female',
     'Other'
 ])
+
+
 
 
 // validation rules
@@ -281,6 +288,10 @@ async function submitForm() {
     align-items: center;
     padding-top: 6rem;
     padding-bottom: 6rem;
+}
+
+.filters-form {
+    padding-bottom: 3rem;
 }
 
 @media (min-width: 100px) {

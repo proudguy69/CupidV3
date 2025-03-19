@@ -50,9 +50,11 @@ if (age_model.value[0]+2 >= 18) {
     max.value = 50
 }
 
-watch(age_model, (new_age_model) => {
-    console.log(age_model.value)
-    console.log(new_age_model)
-})
+watch(age_model, (_) => {
+    if (age_model.value[0]+2 >= 18) {
+        min.value = 18
+        max.value = 50
+    }
+}, {deep:true})
 
 </script>

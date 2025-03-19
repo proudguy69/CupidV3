@@ -59,7 +59,7 @@
 
 
         </v-form>
-        <!--
+        
         <v-form>
             <h1>Filters</h1>
             <h2>Age Filter</h2>
@@ -75,7 +75,7 @@
                 Save Filters
             </v-btn>
         </v-form>
-        -->
+        
     </div>
     <v-snackbar
         v-model="snackbar"
@@ -209,6 +209,7 @@ async function get_matching_profile() {
     sexuality.value = profile.sexuality
     gender.value = profile.gender
     bio.value = profile.bio
+    filters.value.age = [age.value-2, age.value+2]
 }
 
 onMounted(async () => {

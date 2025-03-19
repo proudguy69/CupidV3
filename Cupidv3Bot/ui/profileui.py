@@ -16,7 +16,7 @@ class SubmissionView(View):
         await profile.update({"$set":{'approved':True}})
         self.children[1].disabled = True
         button.disabled = True
-        profile_embed = profile.embed
+        profile_embed = profile.create_embed()
         profile_embed.color = 0x77DD77
         profile_embed.add_field(value=f'Approved by: {interaction.user.mention}', name='Approved')
         await interaction.message.edit(embed=profile_embed, view=self)
@@ -24,7 +24,7 @@ class SubmissionView(View):
 
         try:
             user = self.bot.get_user(profile.user_id)
-            await user.send(f"Your profile was Approved! Swiping will come very soon! be excited for it :)")
+            await user.send(f"Your profile was Approved! Swiping will come very soon! be excited for it :)\n[THANK YOU FOR YOUR PAITENCE SORRY THE BOT WAS BUGGING FOR A BIT]")
         except: 
             await interaction.followup.send(f"I couldnt dm {user.mention}!")
 
@@ -48,7 +48,7 @@ class SubmissionView(View):
         await profile.update({"$set":{'approved':False}})
         self.children[0].disabled = True
         button.disabled = True
-        profile_embed = profile.embed
+        profile_embed = profile.create_embed()
         profile_embed.color = 0xFF6961
         profile_embed.add_field(value=f'Denied by: {interaction.user.mention}', name='Denied')
         await interaction.message.edit(embed=profile_embed, view=self)

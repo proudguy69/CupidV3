@@ -46,21 +46,20 @@ class Profile(BaseDatabaseObject):
 
 
     def create_embed(self, color:int=None):
-        description = f"""
-        ❥﹒User: <@{self.user_id}> | `{self.username}`
+        description = f"""❥﹒User: <@{self.user_id}> | `{self.username}`
         ❥﹒Name: `{self.name}`
         ❥﹒Age: `{self.age}`
         ❥﹒Pronouns: `{self.pronouns}`
         ❥﹒Gender: `{self.gender}`
         ❥﹒Sexuality: `{self.sexuality}`
         ❥﹒Bio: ```{self.bio}```
-        """
+        """.strip()
+        
         embed = Embed(title="Profile", description=description, color=color)
         try:
             embed.set_author(name=self.username, icon_url=self.avatar_url)
         except:
             embed.set_author(name=self.username)
-        
         try:
             embed.set_image(url=self.banner_url)
         except:

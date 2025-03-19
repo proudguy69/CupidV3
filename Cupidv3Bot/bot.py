@@ -9,7 +9,7 @@ from threading import Thread
 
 from Cupidv3Bot.extensions.dispatcher import dispatcher
 from Cupidv3Bot.ui.profileui import SubmissionView
-from CupidV3Database.matchingdb import Profile
+from CupidV3Database.matchingdb import Profile, MATCHING
 
 class Cupidv3(Bot):
     def __init__(self):
@@ -58,7 +58,7 @@ class Cupidv3(Bot):
     async def profile_update(self, data:dict):
         submissions_channel = self.get_channel(1307474634559459360)
         profile, _ = await Profile.get_profile(data.get('profile_id'))
-        profile_embed = profile.embed
+        profile_embed = profile.create_embed()
         profile_embed.color = 0xFDFD96
         
         # check for prev message
@@ -98,5 +98,39 @@ async def reload(context:Context):
     await cupidbot.reload_all()
     await context.send("Done reloading all extensions!")
 
+
+
+@cupidbot.command()
+@is_owner()
+async def repost_unsubmitted(context:Context):
+    query = {"$or": [{"approved": {"$exists": False}}, {"approved": {"$ne": True}}]}
+    profiles:list[Profile] = [Profile(record) async for record in MATCHING.find(query)]
+
+    message = "I have reposted profiles for:" + ", ".join(f'<@{profile.user_id}>' for profile in profiles)
+    
+    submissions_channel = cupidbot.get_channel(1307474634559459360)
+
+    for profile in profiles:
+        profile_embed = profile.create_embed()
+        profile_embed.color = 0xFDFD96
+        
+        # check for prev message
+        try:
+            prev_msg = await submissions_channel.fetch_message(profile.message_id)
+            await prev_msg.delete()
+        except: pass
+
+        try:
+            prev_channel = cupidbot.get_channel(profile.posted_channel)
+            prev_msg = await prev_channel.fetch_message(profile.posted_message)
+            await prev_msg.delete()
+        except: pass
+
+        msg = await submissions_channel.send(embed=profile_embed, view=SubmissionView(cupidbot))
+
+            
+        await profile.update({"$set":{"message_id":msg.id}})
+    
+    await context.send(message)
 
 

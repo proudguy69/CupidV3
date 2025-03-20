@@ -4,7 +4,7 @@ from discord import Embed
 
 class Filters:
     def __init__(self, data:dict, age:int):
-        self.age:list[int] = data.get('age', [age-2, age+2])
+        self.age:list[int] = data.get('age', [int(age)-2, int(age)+2])
 
     @classmethod
     def check_age_compatibility(cls, profile:"Profile", age:int):

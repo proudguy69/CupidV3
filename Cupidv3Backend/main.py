@@ -193,11 +193,14 @@ async def api_profiles_get_compatible(user_id:int):
 async def api_profiles_match(user_id:int, other_id:int, request:Request):
     profile, _ = await Profile.get_profile(user_id)
     other_profile, _ = await Profile.get_profile(other_id)
-    matched = await profile.select_match(other_profile)
+    matched = await profile.match(other_profile)
+    # TODO: Add a match event to the bot to dm / join them into a mutral server
     return {'success':True, 'matched':matched}
 
 @app.post('/api/profiles/{user_id}/reject/{other_id}')
 async def api_profiles_reject(user_id:int, other_id:int, request:Request):
+    profile, _ = await Profile.get_profile(user_id)
+    await profile.reject(other_id)
     return {'success':True}
 
 

@@ -59,6 +59,10 @@ class Profile(BaseDatabaseObject):
         self.message_id = data.get('message_id')
         self.posted_channel = data.get('posted_channel')
         self.posted_message = data.get('posted_message')
+        self.matched_profiles = data.get('matched_profiles', [])
+        self.rejected_profiles = data.get('rejected_profiles', [])
+        self.matches = data.get('matches', [])
+        self.matched_us = data.get('matched_us', [])
         self.filters = Filters(data.get('filters', {}), self.age)
         self.data = data
     
@@ -71,7 +75,6 @@ class Profile(BaseDatabaseObject):
     async def get_compatible_profiles(self) -> list["Profile"]:
         compatible_profiles:list[Profile] = []
         all_profiles = [Profile(record) async for record in MATCHING.find({'approved':True})]
-        return all_profiles
 
         for profile in all_profiles:
             if profile.user_id == self.user_id: continue
@@ -103,6 +106,12 @@ class Profile(BaseDatabaseObject):
             pass
 
         return embed
+    
+    async def select_match(self, other_profile:"Profile"):
+        await self.update({"$push":{'matched_profiles':other_profile.user_id}})
+        await other_profile.update({"$push":{'matched_us':self.user_id}})
+        # * check for match condition
+         
 
 
     @classmethod

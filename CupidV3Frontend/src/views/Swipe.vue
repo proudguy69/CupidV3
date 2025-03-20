@@ -14,14 +14,17 @@
         @reject="reject"
         />
     </div>
-    
+    <v-snackbar :timeout="delay" v-model="snackbar">{{ message }}</v-snackbar>
 </template>
 
 <script setup>
 import ProfileCard from '@/components/ProfileCard.vue';
 import { inject, onMounted, ref, watch } from 'vue';
 
-const profileData = ref({})
+const message = ref('')
+const delay = ref(1000)
+const snackbar = ref(false)
+
 const userProfile = inject('userProfile')
 const currentProfile = ref({
     avatar_url:'N/A',
@@ -39,53 +42,61 @@ const currentProfile = ref({
 let profiles = []
 
 async function match() {
-    return
-    const response = await fetch(`/api/profiles/${userProfile.value.id}/match`, {
+    const response = await fetch(`/api/profiles/${userProfile.value.id}/match/${currentProfile.value.user_id}`, {
         method:'POST',
         headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(currentProfile.value)
+        body: JSON.stringify(currentProfile.valueå)
     })
-    const response_json = await response.json()
+    const response_json = await response.json() // return a new RANDOM profile
     console.log(response_json)
 }
 
 async function reject() {
     setTimeout(async () => {
-        profiles = await getProfiles()
-        currentProfile.value = getRandomProfile(profiles)
+        const response = await fetch(`/api/profiles/${userProfile.value.id}/reject/${currentProfile.value.user_id}`, {
+            method:'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(currentProfile.value)
+        })
+        const response_json = await response.json() // return a new RANDOM profile
+        console.log(response_json)
     }, 750);
     
 
 }
 
 watch(userProfile, async (new_profile) => {
-    //if (profileData) { return }
-    const response = await fetch(`/api/profiles/get/${userProfile.value.id}`)
-    const response_json = await response.json()
-    profileData.value = JSON.parse(response_json.matching_profile)
-    profiles = await getProfiles()
-    currentProfile.value = getRandomProfile(profiles)
+    await loadProfile()
 })
 
 onMounted(async () => {
-    if (!userProfile.value.id) {return}
-    const response = await fetch(`/api/profiles/get/${userProfile.value.id}`)
-    const response_json = await response.json()
-    profileData.value = JSON.parse(response_json.matching_profile)
-    profiles = await getProfiles()
-    currentProfile.value = getRandomProfile(profiles)
+    await loadProfile()
 })
 
-function getRandomProfile(profiles) {
-    const randomIndex = Math.floor(Math.random() * profiles.length);
-    return profiles[randomIndex]
+async function loadProfile() {
+    const profile = await getProfile()
+    console.log(profile)
+    currentProfile.value = profile
 }
 
-async function getProfiles() {
+async function getProfile() {
+    if (!userProfile.value.id) {return}
     const response = await fetch(`/api/profiles/get/${userProfile.value.id}/compatible`)
     const response_json = await response.json()
     console.log(response_json)
-    return response_json.profiles
+    // Check and submit toast if needed
+    if (!response_json.success) {
+        setSnackbar(response_json.message, 3000)
+        return
+    }
+    currentProfile.value = response_json.profile
+    return response_json.profile
+}
+
+async function setSnackbar(msg,dly) {
+    message.value = msg
+    delay.value = dly
+    snackbar.value = true
 }
 
 </script>

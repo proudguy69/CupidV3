@@ -71,7 +71,7 @@ class Profile(BaseDatabaseObject):
     async def get_compatible_profiles(self) -> list["Profile"]:
         compatible_profiles:list[Profile] = []
         all_profiles = [Profile(record) async for record in MATCHING.find({'approved':True})]
-        # only age check for now
+        return all_profiles
 
         for profile in all_profiles:
             if profile.user_id == self.user_id: continue

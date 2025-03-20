@@ -11,6 +11,7 @@ from discord.utils import setup_logging
 from uuid import uuid4
 
 import uvicorn
+import random
 import redis
 import json
 
@@ -177,18 +178,32 @@ async def api_profiles_get_id(user_id:int):
 @app.get('/api/profiles/get/{user_id}/compatible')
 async def api_profiles_get_compatible(user_id:int):
 
-    # TODO: CHANGE TO RANDOMLY GRAB 1 PROFILE AT A TIME
+    # TODO: [X] CHANGE TO RANDOMLY GRAB 1 PROFILE AT A TIME
    
     profile, _ = await Profile.get_profile(user_id)
     compatible = await profile.get_compatible_profiles()
+    if len(compatible) == 0: return {'success':False, 'message':'No one to match with!'}
+    rand_int = random.randint(0, len(compatible)-1)
+    profile = compatible[rand_int]
+    
+    profile.data['user_id'] = str(profile.data['user_id']) # * I guess javascript isnt capable of handling fucking numbers lmao
 
-    packet = {'success':True, 'profiles':[prof.data for prof in compatible]}
+
+    packet = {'success':True, 'profile':profile.data}
     return packet
 
-@app.post('/api/profiles/{user_id}/match')
-async def api_profiles_get_compatible(user_id:int, request:Request):
-    profile_data = json.loads(await request.body())
-    print(profile_data)
+
+@app.post('/api/profiles/{user_id}/match/{other_id}')
+async def api_profiles_match(user_id:int, other_id:int, request:Request):
+    print(user_id)
+    print(other_id)
+   
+    return {'success':True}
+
+@app.post('/api/profiles/{user_id}/reject/{other_id}')
+async def api_profiles_reject(user_id:int, other_id:int, request:Request):
+    print(user_id)
+    print(other_id)
    
     return {'success':True}
 

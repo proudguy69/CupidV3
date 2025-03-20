@@ -1,4 +1,4 @@
-from Cupidv3Backend.settings import CLIENT_SECRET
+from Cupidv3Backend.settings import CLIENT_SECRET, BOT_TOKEN
 from CupidV3Database.matchingdb import Profile
 
 from fastapi import FastAPI, Response, Cookie, Request
@@ -27,10 +27,6 @@ class BaseProfile(BaseModel):
     sexuality:str
     bio:str
     username:str
-    avatar_hash:str|None
-    banner_hash:str|None
-    avatar_url:str|None
-    banner_url:str|None
 
 setup_logging()
 # constants 
@@ -282,7 +278,15 @@ async def api_profiles_update(user_id:int, base_profile:BaseProfile, request:Req
     except Exception as error:
         return {'success':False, 'message':error}
 
-    
+@app.get('/api/users/partial/{user_id}')
+async def api_users_partial_id(user_id:int):
+    headers = {'Authorization': f'Bot {BOT_TOKEN}'}
+    async with ClientSession() as session:
+        response = await session.get(f'{API_ENDPOINT}/users/{user_id}', headers=headers)
+        response_json:dict = await response.json()
+        if response_json.get('error'): return {'success':False, 'data':response_json}
+        return {'success':True, 'profile':response_json}
+
 
 def main():
     uvicorn.run(app, port=5001)

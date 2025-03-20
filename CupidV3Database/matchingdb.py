@@ -55,8 +55,6 @@ class Profile(BaseDatabaseObject):
         self.sexuality = data.get('sexuality')
         self.bio = data.get('bio')
         self.username = data.get('username')
-        self.avatar_url = data.get('avatar_url')
-        self.banner_url = data.get('banner_url')
         self.message_id = data.get('message_id')
         self.posted_channel = data.get('posted_channel')
         self.posted_message = data.get('posted_message')
@@ -77,6 +75,7 @@ class Profile(BaseDatabaseObject):
         compatible_profiles:list[Profile] = []
         all_profiles = [Profile(record) async for record in MATCHING.find({'approved':True})]
 
+        return all_profiles
         for profile in all_profiles:
             if profile.user_id == self.user_id: continue
             if not Filters.check_compatibility(self, profile): continue

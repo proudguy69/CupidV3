@@ -41,6 +41,13 @@ const currentProfile = ref({
 })
 
 
+async function getDiscordUser(user_id) {
+    // used for getting a user object for things like banner and what not
+    const response = await fetch(`/api/users/partial/${user_id}`)
+    const response_data = await response.json()
+    return response_data.profile
+}
+
 async function match() {
     const response = await fetch(`/api/profiles/${userProfile.value.id}/match/${currentProfile.value.user_id}`, {
         method:'POST',
@@ -81,8 +88,16 @@ onMounted(async () => {
 })
 
 async function loadProfile() {
+    if (!userProfile.value.access_token) { return}
     const profile = await getProfile()
-    console.log(profile)
+    const discord_profile = await getDiscordUser(profile.user_id)
+    if (discord_profile.avatar) {
+        currentProfile.value.avatar_url = `https://cdn.discordapp.com/avatars/${profile.user_id}/${discord_profile.avatar}.png`
+    }
+    if (discord_profile.banner) {
+        currentProfile.value.banner_url = `https://cdn.discordapp.com/banners/${profile.user_id}/${discord_profile.banner}.png`
+    }
+        
     currentProfile.value = profile
 }
 
@@ -90,7 +105,6 @@ async function getProfile() {
     if (!userProfile.value.id) {return}
     const response = await fetch(`/api/profiles/get/${userProfile.value.id}/compatible`)
     const response_json = await response.json()
-    console.log(response_json)
     // Check and submit toast if needed
     if (!response_json.success) {
         setSnackbar(response_json.message, 3000)

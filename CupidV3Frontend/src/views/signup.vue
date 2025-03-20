@@ -249,10 +249,6 @@ async function submitForm() {
         gender_specified:genderSpecified.value,
         sexuality:sexuality.value,
         bio:bio.value,
-        avatar_hash:userProfile.value.avatar,
-        banner_hash:userProfile.value.banner,
-        avatar_url:'',
-        banner_url:'',
         username:userProfile.value.username
     })
 

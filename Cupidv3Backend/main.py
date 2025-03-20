@@ -1,5 +1,5 @@
 from Cupidv3Backend.settings import CLIENT_SECRET, BOT_TOKEN
-from CupidV3Database.matchingdb import Profile
+from CupidV3Database.matchingdb import Profile, Filters
 
 from fastapi import FastAPI, Response, Cookie, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,6 +27,12 @@ class BaseProfile(BaseModel):
     sexuality:str
     bio:str
     username:str
+
+
+class BaseFilter(BaseModel):
+    age:list
+    gender:list
+    sexuality:list
 
 setup_logging()
 # constants 
@@ -280,6 +286,21 @@ async def api_profiles_update(user_id:int, base_profile:BaseProfile, request:Req
         
     except Exception as error:
         return {'success':False, 'message':error}
+
+
+@app.post('/api/profiles/filters/update/{user_id}')
+async def api_profiles_update(user_id:int, base_filters:BaseFilter, request:Request):
+    print(base_filters)
+    
+    profile, _ = await Profile.get_profile(user_id)
+    data = {
+        'age': base_filters.age,
+        'gender': base_filters.gender,
+        'sexuality': base_filters.sexuality
+
+    }
+    await profile.update({'$set':{'filters':data}})
+
 
 @app.get('/api/users/partial/{user_id}')
 async def api_users_partial_id(user_id:int):

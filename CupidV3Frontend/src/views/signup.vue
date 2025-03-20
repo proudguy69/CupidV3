@@ -66,6 +66,7 @@
             chips
             label="Gender Filter"
             :items="genderFilterOptions"
+            v-model="filters.gender"
             multiple
             />
 
@@ -73,10 +74,11 @@
             chips
             label="Sexuality Filter"
             :items="sexualityOptions"
+            v-model="filters.sexuality"
             multiple
             />
 
-            <v-btn>
+            <v-btn @click="submitFilters">
                 Save Filters
             </v-btn>
         </v-form>
@@ -111,7 +113,9 @@ const sexuality = ref('Select')
 const bio = ref('')
 
 const filters = ref({
-    age:[age.value-2, age.value+2]
+    age:[age.value-2, age.value+2],
+    gender:[],
+    sexuality:[]
 })
 
 // snackbar stuff
@@ -204,6 +208,15 @@ const bioRules = ref([
 ])
 
 
+async function submitFilters() {
+    await fetch(`/api/profiles/filters/update/${userProfile.value.id}`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(filters.value)
+    })
+    console.log(filters.value)
+}
+
 async function get_matching_profile() {
     if (!userProfile.value.id) { return }
     const response = await fetch(`/api/profiles/get/${userProfile.value.id}`)
@@ -216,7 +229,12 @@ async function get_matching_profile() {
     sexuality.value = profile.sexuality
     gender.value = profile.gender
     bio.value = profile.bio
-    filters.value.age = [age.value-2, age.value+2]
+    console.log(profile)
+    filters.value.age = profile.filters.age
+    filters.value.gender = profile.filters.gender
+    filters.value.sexuality = profile.filters.sexuality
+    console.log(filters.value)
+
 }
 
 onMounted(async () => {

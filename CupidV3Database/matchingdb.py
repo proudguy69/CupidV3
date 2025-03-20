@@ -5,6 +5,8 @@ from discord import Embed
 class Filters:
     def __init__(self, data:dict, age:int):
         self.age:list[int] = data.get('age', [int(age)-2, int(age)+2])
+        self.gender:list[str] = data.get('gender', [])
+        self.sexuality:list[str] = data.get('sexuality', [])
 
     @classmethod
     def check_age_compatibility(cls, profile:"Profile", age:int):
@@ -30,11 +32,13 @@ class Filters:
         """
         selected_check = profile_b.user_id not in profile_a.matched_profiles
         rejected_check = profile_b.user_id not in profile_a.rejected_profiles
+        gender_check = profile_b.gender in profile_a.filters.gender
+        sexuality_check = profile_b.sexuality in profile_a.filters.sexuality
         user_check = profile_a.user_id != profile_b.user_id
         age_check = cls.check_age_compatibility(profile_a, profile_b.age)
 
-
-        if age_check and user_check and selected_check and rejected_check: return True
+        print(f"{profile_b.name} selected: {selected_check} rejected: {rejected_check} gender: {gender_check} sexuality: {sexuality_check} user: {user_check} age: {age_check}")
+        if age_check and user_check and selected_check and rejected_check and gender_check and sexuality_check: return True
         else: return False
 
 
@@ -76,7 +80,7 @@ class Profile(BaseDatabaseObject):
         compatible_profiles:list[Profile] = []
         all_profiles = [Profile(record) async for record in MATCHING.find({'approved':True})]
 
-        return all_profiles
+        #return all_profiles
         for profile in all_profiles:
             if profile.user_id == self.user_id: continue
             if not Filters.check_compatibility(self, profile): continue

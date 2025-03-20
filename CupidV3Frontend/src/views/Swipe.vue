@@ -39,7 +39,7 @@ const currentProfile = ref({
     profile_username:'N/A',
     profile_bio:'N/A'
 })
-let profiles = []
+
 
 async function match() {
     const response = await fetch(`/api/profiles/${userProfile.value.id}/match/${currentProfile.value.user_id}`, {
@@ -47,7 +47,11 @@ async function match() {
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify(currentProfile.valueå)
     })
-    const response_json = await response.json() // return a new RANDOM profile
+    const response_json = await response.json()
+    if (response_json.success) {
+        if (response_json.matched) {}
+        await getProfile() // get a new profile
+    }
     console.log(response_json)
 }
 
@@ -58,7 +62,10 @@ async function reject() {
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify(currentProfile.value)
         })
-        const response_json = await response.json() // return a new RANDOM profile
+        const response_json = await response.json() 
+        if (response_json.success) {
+            await getProfile() // get a new profile
+    }
         console.log(response_json)
     }, 750);
     

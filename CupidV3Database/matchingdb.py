@@ -28,11 +28,12 @@ class Filters:
         Returns:
             bool: true if a is compatible with b
         """
+        selected_check = profile_b.user_id not in profile_a.matched_profiles
         user_check = profile_a.user_id != profile_b.user_id
         age_check = cls.check_age_compatibility(profile_a, profile_b.age)
 
 
-        if age_check and user_check: return True
+        if age_check and user_check and selected_check: return True
         else: return False
 
 
@@ -111,6 +112,11 @@ class Profile(BaseDatabaseObject):
         await self.update({"$push":{'matched_profiles':other_profile.user_id}})
         await other_profile.update({"$push":{'matched_us':self.user_id}})
         # * check for match condition
+        if self.user_id not in other_profile.matched_profiles: return False
+        await self.update({"$push":{'matches',other_profile.user_id}})
+        await other_profile.update({"$push":{'matches',self.user_id}})
+        return True
+
          
 
 

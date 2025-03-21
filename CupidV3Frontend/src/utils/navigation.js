@@ -6,8 +6,7 @@ export function toHome() {
     router.push('/')
 }
 
-export function toAuth() {
-    const oauth_uri = inject('oauth_uri')
+export function toAuth(oauth_uri) {
     window.location.href = oauth_uri.value
 }
 
@@ -19,8 +18,7 @@ export function toSwipe() {
     router.push('/swipe')
 }
 
-export function removeAuth() {
-    const userProfile = inject('userProfile')
+export function removeAuth(userProfile, loggedIn) {
     fetch('/api/0auth/clear')
     userProfile.value = {}
     loggedIn.value = false

@@ -10,7 +10,7 @@
             <span>Home</span>
         </v-btn>
 
-        <v-btn value="login" v-if="!loggedIn" @click="toAuth">
+        <v-btn value="login" v-if="!loggedIn" @click="toAuth(oauth_uri)">
             <v-icon icon="mdi-login"/>
             <span>Login</span>
         </v-btn>
@@ -35,7 +35,7 @@
             <span>Message</span>
         </v-btn>
 
-        <v-btn value="Logout" v-if="loggedIn" @click="removeAuth">
+        <v-btn value="Logout" v-if="loggedIn" @click="removeAuth(userProfile, loggedIn)">
             <v-icon icon="mdi-logout"/>
             <span>Logout</span>
         </v-btn>

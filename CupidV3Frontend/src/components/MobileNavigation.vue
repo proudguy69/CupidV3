@@ -6,7 +6,7 @@
             <span>Home</span>
         </v-btn>
 
-        <v-btn value="otherlogin" v-if="!loggedIn" @click="toAuth" size="x-small">
+        <v-btn value="otherlogin" v-if="!loggedIn" @click="toAuth(oauth_uri)" size="x-small">
             <v-icon icon="mdi-login"/>
             <span>Discord Login</span>
         </v-btn>
@@ -61,7 +61,7 @@
             <span>Message</span>
         </v-btn>
 
-        <v-btn value="Logout" v-if="loggedIn" @click="removeAuth" size="x-small">
+        <v-btn value="Logout" v-if="loggedIn" @click="removeAuth(userProfile, loggedIn)" size="x-small">
             <v-icon icon="mdi-logout"/>
             <span>Logout</span>
         </v-btn>
@@ -74,6 +74,8 @@ import router from '@/router';
 import { ref, inject } from 'vue';
 import { toAuth, toHome, toSignup, toSwipe, removeAuth, toMatches } from '@/utils/navigation';
 
+const oauth_uri = inject('oauth_uri')
+const userProfile = inject('userProfile')
 const loggedIn = inject('loggedIn')
 const superMobile = inject('superMobile')
 

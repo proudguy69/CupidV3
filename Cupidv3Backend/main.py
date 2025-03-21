@@ -199,6 +199,11 @@ async def api_profiles_match(user_id:int, other_id:int, request:Request):
     other_profile, _ = await Profile.get_profile(other_id)
     matched = await profile.match(other_profile)
     # TODO: Add a match event to the bot to dm / join them into a mutral server
+
+    packet = {'event':"users_match", "prof_a":profile.user_id, "prof_b":other_profile._id}
+    seralized_packet = json.dumps(packet)
+    redis_client.publish("bot_channel", seralized_packet)
+    
     return {'success':True, 'matched':matched}
 
 @app.post('/api/profiles/{user_id}/reject/{other_id}')
@@ -277,7 +282,6 @@ async def api_profiles_update(user_id:int, base_profile:BaseProfile, request:Req
         
         packet = {'event':"profile_update", "profile_id":profile.user_id}
         seralized_packet = json.dumps(packet)
-
         redis_client.publish("bot_channel", seralized_packet)
 
         return {'success':True}

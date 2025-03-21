@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <v-form ref="form" class="top-form" @submit.prevent="submitForm">
+        <v-form ref="form" class="top-form" @submit.prevent="submitForm" v-if="userProfile.username">
             <v-text-field
             label="Name"
             v-model="name"
@@ -58,7 +58,7 @@
             <v-btn class="bg-error ml-8" @click="deleteProfile">Delete Profile</v-btn>
         </v-form>
         
-        <v-form class="filters-form">
+        <v-form class="filters-form" v-if="userProfile.username">
             <h1>Filters</h1>
             <v-label>Age Filter</v-label>
             <Slider v-model="filters.age"/>
@@ -82,6 +82,9 @@
                 Save Filters
             </v-btn>
         </v-form>
+
+        <h1 v-if="!userProfile.username">YOU ARENT LOGGED IN TO DISCORD!</h1>
+        <p v-if="!userProfile.username">Go to home -> discord login</p>
         
     </div>
     <v-snackbar
@@ -256,8 +259,15 @@ async function deleteProfile() {
 async function submitForm() {
     await form.value.validate()
     if (!form.value.isValid) {return}
+    if (!userProfile.value.id) {
+        text.value = "You have no ID! please re-log in, go to the home page, THEN go to the signup page"
+        snackbar.value = true
+        return
+    }
     text.value = "Submitting Form..."
     snackbar.value = true
+
+
 
     const data = JSON.stringify({
         user_id:userProfile.value.id,
@@ -272,7 +282,7 @@ async function submitForm() {
         username:userProfile.value.username
     })
 
-    console.log(data)
+    
 
     const response = await fetch(`/api/profiles/update/${userProfile.value.id}`, {
         method: 'POST',
@@ -281,8 +291,9 @@ async function submitForm() {
     })
 
     const response_json = await response.json()
+    console.log(response_json)
     if (!response_json.success) {
-        text.value = response_json.message
+        text.value = `An Error Occured: ${response_json}`
         snackbar.value = true
     } else {
         text.value = "Profile Updated Successfully!"

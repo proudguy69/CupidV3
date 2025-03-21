@@ -17,7 +17,7 @@ const userProfile = ref({})
 const loggedIn = ref(false)
 const dev_uri = 'https://discord.com/oauth2/authorize?client_id=1343727517529542718&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fapi%2F0auth%2Fexchange&scope=identify+guilds+email'
 const prod_uri = 'https://discord.com/oauth2/authorize?client_id=1343727517529542718&response_type=code&redirect_uri=https%3A%2F%2Fcupidbot.xyz%2Fapi%2F0auth%2Fexchange&scope=identify+guilds+email'
-const dev = true
+const dev = false
 const oauth_uri = ref('')
 
 if (dev) {

@@ -131,7 +131,7 @@ class Profile(BaseDatabaseObject):
 
 
     @classmethod
-    async def create_profile(cls, user_id:int, name:str, age:str, pronouns:str, gender:str, sexuality:str, bio:str, username:str, avatar_url:str=None, banner_url:str=None):
+    async def create_profile(cls, user_id:int, name:str, age:str, pronouns:str, gender:str, sexuality:str, bio:str, username:str):
         record = await MATCHING.find_one({'user_id':user_id})
         if record: return Profile(user_id)
         data = {
@@ -143,8 +143,6 @@ class Profile(BaseDatabaseObject):
             "gender":gender,
             "sexuality":sexuality,
             "bio":bio,
-            "avatar_url":avatar_url,
-            "banner_url":banner_url
         }
         await cls._create_record(MATCHING, data)
     
@@ -173,7 +171,7 @@ class Profile(BaseDatabaseObject):
         record = await MATCHING.find_one({'user_id':user_id})
         if not record:
             if create_if_not_exists:
-                return await cls.create_profile(user_id, name=name, age=age, pronouns=pronouns, gender=gender, sexuality=sexuality, bio=bio, username=username, avatar_url=avatar_url, banner_url=banner_url), True
+                return await cls.create_profile(user_id, name=name, age=age, pronouns=pronouns, gender=gender, sexuality=sexuality, bio=bio, username=username), True
             else:
                 return None, False
         return Profile(record), False

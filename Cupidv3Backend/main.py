@@ -38,7 +38,7 @@ setup_logging()
 # constants 
 API_ENDPOINT = 'https://discord.com/api/v10'
 CLIENT_ID = '1343727517529542718'
-REDIRECT_URI = 'http://localhost:5173/api/0auth/exchange'
+REDIRECT_URI = 'https://cupidbot.xyz/api/0auth/exchange'
 
 # global functions
 async def exchange_code(code:str):
@@ -243,51 +243,43 @@ async def api_profiles_update(user_id:int, base_profile:BaseProfile, request:Req
     Returns:
         dict: weather the update was successful or not
     """
-    try:
-        age = base_profile.age_specified if base_profile.age_specified else base_profile.age
-        gender = base_profile.gender_specified if base_profile.gender_specified else base_profile.gender
-        a_hash = base_profile.avatar_hash
-        b_hash = base_profile.banner_hash
-        avatar_url = f'https://cdn.discordapp.com/avatars/{user_id}/{a_hash}.png' if base_profile.avatar_hash else  ''
-        banner_url = f'https://cdn.discordapp.com/banners/{user_id}/{b_hash}.png?size=1024' if base_profile.banner_hash else  ''
+    #try:
+    age = base_profile.age_specified if base_profile.age_specified else base_profile.age
+    gender = base_profile.gender_specified if base_profile.gender_specified else base_profile.gender
 
-        profile, created = await Profile.get_profile(
-            user_id,
-            True,
-            name=base_profile.name,
-            age=age,
-            pronouns=base_profile.pronouns,
-            gender=gender,
-            sexuality=base_profile.sexuality,
-            bio=base_profile.bio,
-            username=base_profile.username,
-            avatar_url=avatar_url,
-            banner_url=banner_url
-            )
-        
-        if not created: 
-            await profile.update({"$set": {
-                "name":base_profile.name,
-                "age":base_profile.age,
-                "pronouns":base_profile.pronouns,
-                "gender":base_profile.gender,
-                "sexuality":base_profile.sexuality,
-                "bio":base_profile.bio,
-                "username":base_profile.username,
-                "avatar_url":avatar_url,
-                "banner_url":banner_url
-            }})
-        
+    profile, created = await Profile.get_profile(
+        user_id,
+        True,
+        name=base_profile.name,
+        age=age,
+        pronouns=base_profile.pronouns,
+        gender=gender,
+        sexuality=base_profile.sexuality,
+        bio=base_profile.bio,
+        username=base_profile.username,
+        )
+    
+    if not created: 
+        await profile.update({"$set": {
+            "name":base_profile.name,
+            "age":base_profile.age,
+            "pronouns":base_profile.pronouns,
+            "gender":base_profile.gender,
+            "sexuality":base_profile.sexuality,
+            "bio":base_profile.bio,
+            "username":base_profile.username,
+        }})
+    
 
-        
-        packet = {'event':"profile_update", "profile_id":profile.user_id}
-        seralized_packet = json.dumps(packet)
-        redis_client.publish("bot_channel", seralized_packet)
+    
+    packet = {'event':"profile_update", "profile_id":user_id}
+    seralized_packet = json.dumps(packet)
+    redis_client.publish("bot_channel", seralized_packet)
 
-        return {'success':True}
+    return {'success':True}
         
-    except Exception as error:
-        return {'success':False, 'message':error}
+    #except Exception as error:
+    #    return {'success':False, 'message':error}
 
 
 @app.post('/api/profiles/filters/update/{user_id}')
@@ -295,6 +287,8 @@ async def api_profiles_update(user_id:int, base_filters:BaseFilter, request:Requ
     print(base_filters)
     
     profile, _ = await Profile.get_profile(user_id)
+    if not profile:
+        return {'success': False, 'message':'You must submit a profile first!'}
     data = {
         'age': base_filters.age,
         'gender': base_filters.gender,
@@ -316,7 +310,7 @@ async def api_users_partial_id(user_id:int):
 
 
 def main():
-    uvicorn.run(app, port=5001)
+    uvicorn.run(app, port=5000)
 
 if __name__ == "__main__":
     main()

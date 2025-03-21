@@ -56,7 +56,11 @@ async function match() {
     })
     const response_json = await response.json()
     if (response_json.success) {
-        if (response_json.matched) {}
+        if (response_json.matched) {
+            message.value = "You succesfully matched! its up to you to dm / add them on discord"
+            snackbar.value = true
+        }
+        return
         await getProfile() // get a new profile
     }
     console.log(response_json)

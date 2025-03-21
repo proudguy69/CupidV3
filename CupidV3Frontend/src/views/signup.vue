@@ -209,12 +209,15 @@ const bioRules = ref([
 
 
 async function submitFilters() {
+    text.value = "Submitting Filters..."
+    snackbar.value = true
     await fetch(`/api/profiles/filters/update/${userProfile.value.id}`,{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify(filters.value)
     })
-    console.log(filters.value)
+    text.value = "Filters applied!"
+    snackbar.value = true
 }
 
 async function get_matching_profile() {
@@ -229,11 +232,9 @@ async function get_matching_profile() {
     sexuality.value = profile.sexuality
     gender.value = profile.gender
     bio.value = profile.bio
-    console.log(profile)
     filters.value.age = profile.filters.age
     filters.value.gender = profile.filters.gender
     filters.value.sexuality = profile.filters.sexuality
-    console.log(filters.value)
 
 }
 

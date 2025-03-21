@@ -300,6 +300,7 @@ async def api_profiles_update(user_id:int, base_filters:BaseFilter, request:Requ
 
     }
     await profile.update({'$set':{'filters':data}})
+    return {'success':True}
 
 
 @app.get('/api/users/partial/{user_id}')

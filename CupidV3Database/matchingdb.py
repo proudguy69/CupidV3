@@ -118,7 +118,7 @@ class Profile(BaseDatabaseObject):
         # * check for match condition
         if self.user_id not in other_profile.matched_profiles: return False
         await self.update({"$push":{'matches':other_profile.user_id}})
-        await other_profile.update({"$push":{'matches',self.user_id}})
+        await other_profile.update({"$push":{'matches':self.user_id}})
         return True
     
     async def reject(self, other_profile_id:int):

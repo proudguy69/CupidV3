@@ -62,8 +62,10 @@ async function match() {
             message.value = "You succesfully matched! its up to you to dm / add them on discord"
             snackbar.value = true
         }
-        return
-        await getProfile() // get a new profile
+        setTimeout(async ()=> {
+            await getProfile() // get a new profile
+        }, 750)
+        
     }
     console.log(response_json)
 }

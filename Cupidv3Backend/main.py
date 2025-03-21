@@ -170,8 +170,6 @@ async def api_profiles_get_id(user_id:int):
     """
     profile, _ = await Profile.get_profile(user_id)
     if profile:
-        profile_dict = profile.data
-        profile_dict['embed'] = None
         matching_profile = json.dumps(profile.data)
         return {'success':True, 'matching_profile':matching_profile}
     else: return {'success':False}

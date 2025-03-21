@@ -69,6 +69,9 @@ class Profile(BaseDatabaseObject):
         self.matched_us = data.get('matched_us', [])
         self.filters = Filters(data.get('filters', {}), self.age)
         self.data = data
+
+        if not data.get('filters'):
+            self.data['filters'] = self.filters.__dict__
     
 
     async def update(self, data:dict):

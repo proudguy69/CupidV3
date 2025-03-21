@@ -1,6 +1,6 @@
 <template>
     <div class="container mx-auto">
-        <ProfileCard
+        <ProfileCard v-if="prof"
         :avatar_url="currentProfile.avatar_url"
         :banner_url="currentProfile.banner_url"
         :profile_name="currentProfile.name"
@@ -13,6 +13,7 @@
         @match="match"
         @reject="reject"
         />
+        <h1 v-if="!prof">All out of matches!</h1>
     </div>
     <v-snackbar :timeout="delay" v-model="snackbar">{{ message }}</v-snackbar>
 </template>
@@ -24,6 +25,7 @@ import { inject, onMounted, ref, watch } from 'vue';
 const message = ref('')
 const delay = ref(1000)
 const snackbar = ref(false)
+const prof = ref(false)
 
 const userProfile = inject('userProfile')
 const currentProfile = ref({
@@ -94,6 +96,7 @@ onMounted(async () => {
 async function loadProfile() {
     if (!userProfile.value.access_token) { return}
     const profile = await getProfile()
+    if (!profile) {return}
     const discord_profile = await getDiscordUser(profile.user_id)
     if (discord_profile.avatar) {
         currentProfile.value.avatar_url = `https://cdn.discordapp.com/avatars/${profile.user_id}/${discord_profile.avatar}.png`
@@ -111,9 +114,11 @@ async function getProfile() {
     const response_json = await response.json()
     // Check and submit toast if needed
     if (!response_json.success) {
+        prof.value = false
         setSnackbar(response_json.message, 3000)
         return
     }
+    prof.value = true
     currentProfile.value = response_json.profile
     return response_json.profile
 }

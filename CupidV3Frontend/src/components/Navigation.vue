@@ -25,7 +25,7 @@
             <span>Account</span>
         </v-btn>
 
-        <v-btn value="Matches" v-if="loggedIn">
+        <v-btn value="Matches" v-if="loggedIn" @click="toMatches">
             <v-icon icon="mdi-account-check" />
             <span>Matches</span>
         </v-btn>
@@ -46,38 +46,13 @@
 
 <script setup>
 import icon from '@/assets/DSW.svg'
-import router from '@/router';
+import { toAuth, toHome, toSignup, toSwipe, removeAuth, toMatches } from '@/utils/navigation';
 import { inject, onMounted, watch } from 'vue';
 
 const oauth_uri = inject('oauth_uri')
 const userProfile = inject('userProfile')
 const loggedIn = inject('loggedIn')
 
-function toHome() {
-    router.push('/')
-}
-
-
-function removeAuth() {
-    fetch('/api/0auth/clear')
-    userProfile.value = {}
-    loggedIn.value = false
-    router.replace('/')
-}
-
-function toAuth() {
-    console.log(oauth_uri.value)
-    window.location.href = oauth_uri.value
-}
-
-
-function toSignup() {
-    router.push('/signup')
-}
-
-function toSwipe() {
-    router.push('/swipe')
-}
 
 </script>
 

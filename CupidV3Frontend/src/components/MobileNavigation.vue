@@ -36,7 +36,7 @@
                     </v-btn>
                 </v-list-item>
                 <v-list-item>
-                    <v-btn variant="text">
+                    <v-btn variant="text" @click="toMatches">
                         <v-icon icon="mdi-account-check" />
                         <span>Matches</span>
                     </v-btn>
@@ -72,38 +72,10 @@
 <script setup>
 import router from '@/router';
 import { ref, inject } from 'vue';
+import { toAuth, toHome, toSignup, toSwipe, removeAuth, toMatches } from '@/utils/navigation';
 
 const loggedIn = inject('loggedIn')
-const userProfile = inject('userProfile')
 const superMobile = inject('superMobile')
-const oauth_uri = inject('oauth_uri')
-
-
-function toHome() {
-    router.push('/')
-}
-
-
-function removeAuth() {
-    console.log('logout')
-    fetch('/api/0auth/clear')
-    userProfile.value = {}
-    loggedIn.value = false
-    router.replace('/')
-}
-
-function toAuth() {
-    window.location.href = oauth_uri.value
-}
-
-
-function toSignup() {
-    router.push('/signup')
-}
-
-function toSwipe() {
-    router.push('/swipe')
-}
 
 </script>
 
